@@ -126,6 +126,23 @@ export async function createAgentAndLogin(
   })
 }
 
+export async function createAgentAndLoginWithGoogle(
+  {service, accessJwt, refreshJwt, did, handle, email, emailConfirmed, active, status}: {
+    service: string; accessJwt: string; refreshJwt: string; did: string; handle: string
+    email: string; emailConfirmed: boolean; active: boolean; status?: string
+  },
+  onSessionChange: (agent: BskyAgent, did: string, event: AtpSessionEvent) => void,
+) {
+  const agent = new BskyAppAgent({service})
+  agent.sessionManager.session = {accessJwt, refreshJwt, did, handle, email, emailConfirmed, active, status}
+  const account = agentToSessionAccountOrThrow(agent)
+  const gates = features.refresh({strategy: 'prefer-fresh-gates'})
+  const moderation = configureModerationForAccount(agent, account)
+  const aa = prefetchAgeAssuranceData({agent})
+  agent.configureProxy(BLUESKY_PROXY_HEADER.get())
+  return agent.prepare({resolvers: [gates, moderation, aa], onSessionChange})
+}
+
 export async function createAgentAndCreateAccount(
   {
     service,

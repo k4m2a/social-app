@@ -54,6 +54,7 @@ export type SignupState = {
   password: string
   inviteCode: string
   handle: string
+  googleIdToken: string | undefined
 
   error: string
   errorField?: ErrorField
@@ -85,6 +86,7 @@ export type SignupAction =
   | {type: 'setIsLoading'; value: boolean}
   | {type: 'submit'; task: SubmitTask}
   | {type: 'incrementBackgroundCount'}
+  | {type: 'setGoogleIdToken'; value: string; email: string}
 
 export const initialState: SignupState = {
   analytics: undefined,
@@ -101,6 +103,7 @@ export const initialState: SignupState = {
   password: '',
   handle: '',
   inviteCode: '',
+  googleIdToken: undefined,
 
   error: '',
   errorField: undefined,
@@ -126,6 +129,15 @@ export function is13(date: Date) {
 
 export function is18(date: Date) {
   return getAge(date) >= 18
+}
+
+function generateRandomPassword(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%'
+  let pw = ''
+  for (let i = 0; i < 24; i++) {
+    pw += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return pw
 }
 
 export function reducer(s: SignupState, a: SignupAction): SignupState {
@@ -223,13 +235,15 @@ export function reducer(s: SignupState, a: SignupAction): SignupState {
       break
     }
     case 'incrementBackgroundCount': {
-      next.backgroundCount = s.backgroundCount + 1
-
-      // Log background/foreground event during signup
-      s.analytics?.metric('signup:backgrounded', {
-        activeStep: next.activeStep,
-        backgroundCount: next.backgroundCount,
-      })
+      next.backgroundCount++
+      break
+    }
+    case 'setGoogleIdToken': {
+      next.googleIdToken = a.value
+      next.email = a.email
+      next.password = generateRandomPassword()
+      next.activeStep = SignupStep.HANDLE
+      next.screenTransitionDirection = 'Forward'
       break
     }
   }
@@ -279,7 +293,7 @@ export function useSubmitSignup() {
           field: 'email',
         })
       }
-      if (!state.password) {
+      if (!state.googleIdToken && !state.password) {
         dispatch({type: 'setStep', value: SignupStep.INFO})
         return dispatch({
           type: 'setError',
@@ -338,6 +352,19 @@ export function useSubmitSignup() {
          * createAccount fails, one tab is not stuck in onboarding — Eric
          */
         onboardingDispatch({type: 'start'})
+
+        // Link Google account after successful creation
+        if (state.googleIdToken) {
+          try {
+            await fetch(`${state.serviceUrl}/api/google-auth/link`, {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({idToken: state.googleIdToken, did: 'self'}),
+            })
+          } catch {
+            // Non-fatal — account was created, linking can be retried
+          }
+        }
       } catch (err) {
         const e = err as Error
         let errMsg = e.toString()

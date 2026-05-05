@@ -32,7 +32,13 @@ import {useAnalytics} from '#/analytics'
 import {GCP_PROJECT_ID, IS_ANDROID} from '#/env'
 import * as bsky from '#/types/bsky'
 
-export function Signup({onPressBack}: {onPressBack: () => void}) {
+export function Signup({
+  onPressBack,
+  prefillEmail,
+}: {
+  onPressBack: () => void
+  prefillEmail?: string
+}) {
   const ax = useAnalytics()
   const {t: l} = useLingui()
   const t = useTheme()
@@ -44,11 +50,12 @@ export function Signup({onPressBack}: {onPressBack: () => void}) {
   const submit = useSubmitSignup()
 
   useEffect(() => {
-    dispatch({
-      type: 'setAnalytics',
-      value: ax,
-    })
+    dispatch({type: 'setAnalytics', value: ax})
   }, [ax])
+
+  useEffect(() => {
+    if (prefillEmail) dispatch({type: 'setEmail', value: prefillEmail})
+  }, [prefillEmail])
 
   const activeStarterPack = useActiveStarterPack()
   const {
@@ -204,6 +211,13 @@ export function Signup({onPressBack}: {onPressBack: () => void}) {
                       }
                       isServerError={isError}
                       refetchServer={() => void refetch()}
+                      onGoogleAccountNotFound={(email, idToken) => {
+                        if (idToken) {
+                          dispatch({type: 'setGoogleIdToken', value: idToken, email})
+                        } else {
+                          dispatch({type: 'setEmail', value: email})
+                        }
+                      }}
                     />
                   ) : state.activeStep === SignupStep.HANDLE ? (
                     <StepHandle />

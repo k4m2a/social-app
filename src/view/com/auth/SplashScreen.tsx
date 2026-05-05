@@ -11,6 +11,7 @@ import {Logo} from '#/view/icons/Logo'
 import {Logotype} from '#/view/icons/Logotype'
 import {atoms as a, useTheme} from '#/alf'
 import {Button, ButtonText} from '#/components/Button'
+import {Divider} from '#/components/Divider'
 // @ts-ignore
 import splashImagePointer from '../../../../assets/splash/illustration-mobile.png'
 // @ts-ignore
@@ -23,9 +24,11 @@ const darkSplashImageUri = RNImage.resolveAssetSource(
 export const SplashScreen = ({
   onPressSignin,
   onPressCreateAccount,
+  onPressGoogleSignIn,
 }: {
   onPressSignin: () => void
   onPressCreateAccount: () => void
+  onPressGoogleSignIn?: () => void
 }) => {
   const t = useTheme()
   const {_} = useLingui()
@@ -124,6 +127,25 @@ export const SplashScreen = ({
               <Trans>Sign in</Trans>
             </ButtonText>
           </Button>
+
+          {onPressGoogleSignIn && (
+            <>
+              <Divider />
+              <Button
+                testID="googleContinueButton"
+                onPress={() => {
+                  onPressGoogleSignIn()
+                  playHaptic('Light')
+                }}
+                label={_(msg`Continue with Google`)}
+                size="large"
+                color="secondary">
+                <ButtonText>
+                  <Trans>Continue with Google</Trans>
+                </ButtonText>
+              </Button>
+            </>
+          )}
         </View>
       </Animated.View>
     </>

@@ -5,10 +5,12 @@ import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {useQueryClient} from '@tanstack/react-query'
 
+import {DEFAULT_SERVICE} from '#/lib/constants'
 import {PressableScale} from '#/lib/custom-animations/PressableScale'
+import {logger} from '#/logger'
 import {STALE} from '#/state/queries'
 import {profilesQueryKey} from '#/state/queries/profile'
-import {useAgent, useSession} from '#/state/session'
+import {useAgent, useSession, useSessionApi} from '#/state/session'
 import {
   useLoggedOutView,
   useLoggedOutViewControls,
@@ -22,6 +24,7 @@ import {atoms as a, native, tokens, useTheme} from '#/alf'
 import {Button, ButtonIcon} from '#/components/Button'
 import {TimesLarge_Stroke2_Corner0_Rounded as XIcon} from '#/components/icons/Times'
 import {useAnalytics} from '#/analytics'
+import {useGoogleIdToken} from '#/features/googleAuth/useGoogleIdToken'
 import {SplashScreen} from './SplashScreen'
 
 enum ScreenState {
@@ -50,7 +53,10 @@ export function LoggedOut({onDismiss}: {onDismiss?: () => void}) {
       return ScreenState.S_LoginOrCreateAccount
     }
   })
-  const {clearRequestedAccount} = useLoggedOutViewControls()
+  const {clearRequestedAccount, setShowLoggedOut} = useLoggedOutViewControls()
+  const [googleEmail, setGoogleEmail] = useState<string | undefined>()
+  const {googleLogin} = useSessionApi()
+  const {getIdToken} = useGoogleIdToken()
 
   const queryClient = useQueryClient()
   const {accounts} = useSession()
@@ -74,6 +80,49 @@ export function LoggedOut({onDismiss}: {onDismiss?: () => void}) {
     }
     clearRequestedAccount()
   }, [clearRequestedAccount, onDismiss])
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const idToken = await getIdToken()
+      const res = await fetch(
+        `${DEFAULT_SERVICE}/api/google-auth`,
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({idToken, action: 'sign-in'}),
+        },
+      )
+      if (!res.ok) throw new Error('Google auth failed')
+      const data = await res.json()
+      if (!data.success || data.action === 'needs-signup') {
+        setGoogleEmail(data.email)
+        setScreenState(ScreenState.S_CreateAccount)
+        return
+      }
+      // Account found — if PDS returns session tokens, log in
+      if (data.accessJwt && data.refreshJwt) {
+        await googleLogin(
+          {
+            service: DEFAULT_SERVICE,
+            accessJwt: data.accessJwt,
+            refreshJwt: data.refreshJwt,
+            did: data.did,
+            handle: data.handle,
+            email: data.email,
+            emailConfirmed: data.emailConfirmed ?? true,
+            active: data.active ?? true,
+            status: data.status,
+          },
+          'GoogleSignIn',
+        )
+        setShowLoggedOut(false)
+      } else {
+        throw new Error('Server did not return session tokens. Please rebuild your PDS.')
+      }
+    } catch (e: any) {
+      logger.warn('Google sign-in failed', {error: e.toString()})
+    }
+  }
 
   return (
     <View
@@ -117,6 +166,7 @@ export function LoggedOut({onDismiss}: {onDismiss?: () => void}) {
               setScreenState(ScreenState.S_CreateAccount)
               ax.metric('splash:createAccountPressed', {})
             }}
+            onPressGoogleSignIn={handleGoogleSignIn}
           />
         ) : undefined}
         {screenState === ScreenState.S_Login ? (
@@ -125,13 +175,19 @@ export function LoggedOut({onDismiss}: {onDismiss?: () => void}) {
               setScreenState(ScreenState.S_LoginOrCreateAccount)
               clearRequestedAccount()
             }}
+            onAccountNotFound={email => {
+              setGoogleEmail(email)
+              setScreenState(ScreenState.S_CreateAccount)
+            }}
           />
         ) : undefined}
         {screenState === ScreenState.S_CreateAccount ? (
           <Signup
-            onPressBack={() =>
+            onPressBack={() => {
+              setGoogleEmail(undefined)
               setScreenState(ScreenState.S_LoginOrCreateAccount)
-            }
+            }}
+            prefillEmail={googleEmail}
           />
         ) : undefined}
       </ErrorBoundary>

@@ -1,5 +1,5 @@
-import {type PersistedAccount} from '#/state/persisted'
-import {type Metrics} from '#/analytics/metrics'
+import { type PersistedAccount } from '#/state/persisted'
+import { type Metrics } from '#/analytics/metrics'
 
 export type SessionAccount = PersistedAccount
 
@@ -51,4 +51,18 @@ export type SessionApiContext = {
    * `persistSessionHandler`.
    */
   partialRefreshSession: () => Promise<void>
+  googleLogin: (
+    props: {
+      service: string;
+      accessJwt: string;
+      refreshJwt: string;
+      did: string;
+      handle: string;
+      email: string;
+      emailConfirmed: boolean;
+      active: boolean;
+      status?: string
+    },
+    logContext: Metrics['account:loggedIn']['logContext'],
+  ) => Promise<void>
 }

@@ -21,6 +21,7 @@ import {
   type BskyAppAgent,
   createAgentAndCreateAccount,
   createAgentAndLogin,
+  createAgentAndLoginWithGoogle,
   createAgentAndResume,
   sessionAccountToSession,
 } from './agent'
@@ -53,6 +54,7 @@ AgentContext.displayName = 'SessionAgentContext'
 const ApiContext = createContext<SessionApiContext>({
   createAccount: async () => {},
   login: async () => {},
+  googleLogin: async () => {},
   logoutCurrentAccount: () => {},
   logoutEveryAccount: () => {},
   resumeSession: async () => {},
@@ -176,6 +178,19 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
         {session: utils.accountToSessionMetadata(account)},
       )
       addSessionDebugLog({type: 'method:end', method: 'login', account})
+    },
+    [ax, store, onAgentSessionChange, cancelPendingTask],
+  )
+
+  const googleLogin = useCallback<SessionApiContext['googleLogin']>(
+    async (params, logContext) => {
+      addSessionDebugLog({type: 'method:start', method: 'googleLogin'})
+      const signal = cancelPendingTask()
+      const {agent, account} = await createAgentAndLoginWithGoogle(params, onAgentSessionChange)
+      if (signal.aborted) return
+      store.dispatch({type: 'switched-to-account', newAgent: agent, newAccount: account})
+      ax.metric('account:loggedIn', {logContext, withPassword: false}, {session: utils.accountToSessionMetadata(account)})
+      addSessionDebugLog({type: 'method:end', method: 'googleLogin', account})
     },
     [ax, store, onAgentSessionChange, cancelPendingTask],
   )
@@ -360,6 +375,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
     () => ({
       createAccount,
       login,
+      googleLogin,
       logoutCurrentAccount,
       logoutEveryAccount,
       resumeSession,
@@ -369,6 +385,7 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
     [
       createAccount,
       login,
+      googleLogin,
       logoutCurrentAccount,
       logoutEveryAccount,
       resumeSession,

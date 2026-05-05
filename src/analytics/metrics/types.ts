@@ -33,6 +33,7 @@ export type Events = {
       | 'ChooseAccountForm'
       | 'Settings'
       | 'Notification'
+      | 'GoogleSignIn'
     withPassword: boolean
   }
   'account:loggedOut': {

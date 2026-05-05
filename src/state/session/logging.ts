@@ -22,6 +22,7 @@ type Log =
       method:
         | 'createAccount'
         | 'login'
+        | 'googleLogin'
         | 'logout'
         | 'resumeSession'
         | 'removeAccount'
@@ -32,6 +33,7 @@ type Log =
       method:
         | 'createAccount'
         | 'login'
+        | 'googleLogin'
         | 'logout'
         | 'resumeSession'
         | 'removeAccount'

@@ -26,6 +26,7 @@ import {Ticket_Stroke2_Corner0_Rounded as Ticket} from '#/components/icons/Ticke
 import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
 import {IS_IOS, IS_WEB} from '#/env'
+import {GoogleSignInButton} from '#/features/googleAuth/GoogleSignInButton'
 import {FormContainer} from './FormContainer'
 
 type ServiceDescription = ComAtprotoServerDescribeServer.OutputSchema
@@ -42,6 +43,7 @@ export const LoginForm = ({
   onPressForgotPassword,
   onAttemptSuccess,
   onAttemptFailed,
+  onAccountNotFound,
 }: {
   error: string
   serviceUrl: string
@@ -54,6 +56,7 @@ export const LoginForm = ({
   onPressForgotPassword: () => void
   onAttemptSuccess: () => void
   onAttemptFailed: () => void
+  onAccountNotFound?: (email: string) => void
 }) => {
   const t = useTheme()
   const [isProcessing, setIsProcessing] = useState(false)
@@ -359,6 +362,11 @@ export const LoginForm = ({
           </Button>
         )}
       </View>
+      <GoogleSignInButton
+        serviceUrl={serviceUrl}
+        onAccountNotFound={onAccountNotFound}
+        onError={msg => setError(msg)}
+      />
     </FormContainer>
   )
 }

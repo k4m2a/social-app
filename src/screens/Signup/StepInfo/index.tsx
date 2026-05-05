@@ -31,6 +31,7 @@ import {
 } from '#/ageAssurance/util'
 import {useAnalytics} from '#/analytics'
 import {IS_NATIVE} from '#/env'
+import {GoogleSignInButton} from '#/features/googleAuth/GoogleSignInButton'
 import {
   useDeviceGeolocationApi,
   useIsDeviceGeolocationGranted,
@@ -52,11 +53,13 @@ export function StepInfo({
   isServerError,
   refetchServer,
   isLoadingStarterPack,
+  onGoogleAccountNotFound,
 }: {
   onPressBack: () => void
   isServerError: boolean
   refetchServer: () => void
   isLoadingStarterPack: boolean
+  onGoogleAccountNotFound?: (email: string, idToken?: string) => void
 }) {
   const {t: l} = useLingui()
   const ax = useAnalytics()
@@ -367,6 +370,11 @@ export function StepInfo({
           </>
         ) : undefined}
       </View>
+      <GoogleSignInButton
+        serviceUrl={state.serviceUrl}
+        onAccountNotFound={onGoogleAccountNotFound}
+        skipConfirmDialog
+      />
       <BackNextButtons
         hideNext={!isOverRegionMinAccessAge}
         showRetry={isServerError}

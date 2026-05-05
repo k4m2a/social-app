@@ -151,3 +151,6 @@ export const APP_CONFIG_PROD_URL = `https://app-config.workers.bsky.app`
 export const APP_CONFIG_URL = IS_DEV
   ? (APP_CONFIG_DEV_URL ?? APP_CONFIG_PROD_URL)
   : APP_CONFIG_PROD_URL
+
+export const GOOGLE_WEB_CLIENT_ID: string | undefined =
+  process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID
