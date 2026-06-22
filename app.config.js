@@ -1,4 +1,6 @@
 // @ts-check
+/* eslint-disable import-x/no-nodejs-modules */
+const fs = require('fs')
 const pkg = require('./package.json')
 
 /**
@@ -193,7 +195,9 @@ module.exports = function (_config) {
           monochromeImage: './assets/icon-android-monochrome.png',
           backgroundColor: '#006AFF',
         },
-        googleServicesFile: './google-services.json',
+        ...(fs.existsSync('./google-services.json')
+          ? {googleServicesFile: './google-services.json'}
+          : {}),
         package: 'xyz.blueskyweb.app',
         intentFilters: [
           {

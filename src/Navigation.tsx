@@ -18,6 +18,7 @@ import {
 } from '@react-navigation/native'
 
 import {timeout} from '#/lib/async/timeout'
+import {BRAND_DOMAIN, BRAND_HOST} from '#/lib/brand'
 import {useAccountSwitcher} from '#/lib/hooks/useAccountSwitcher'
 import {useColorSchemeStyle} from '#/lib/hooks/useColorSchemeStyle'
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
@@ -851,7 +852,7 @@ const FlatNavigator = ({
 const LINKING = {
   // TODO figure out what we are going to use
   // note: `bluesky://` is what is used in app.config.js
-  prefixes: ['bsky://', 'bluesky://', 'https://bsky.app'],
+  prefixes: ['bsky://', 'bluesky://', 'https://bsky.app', BRAND_HOST],
 
   getPathFromState(state: State) {
     // find the current node in the navigation tree
@@ -1035,7 +1036,7 @@ function RoutesContainer({children}: React.PropsWithChildren<{}>) {
 
     if (IS_WEB) {
       const referrerInfo = Referrer.getReferrerInfo()
-      if (referrerInfo && referrerInfo.hostname !== 'bsky.app') {
+      if (referrerInfo && referrerInfo.hostname !== BRAND_DOMAIN) {
         ax.metric('deepLink:referrerReceived', {
           to: window.location.href,
           referrer: referrerInfo?.referrer,

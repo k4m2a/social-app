@@ -20,4 +20,13 @@ describe('parseLinkingUrl', () => {
     expect(urlp.host).toBe('bsky.app')
     expect(urlp.pathname).toBe('/intent/age-assurance')
   })
+
+  it('should correctly parse brand URLs', () => {
+    const url =
+      'https://coseeker.org/intent/age-assurance?result=success&actorDid=did:example:123'
+    const urlp = parseLinkingUrl(url)
+    expect(urlp.protocol).toBe('https:')
+    expect(urlp.host).toBe('coseeker.org')
+    expect(urlp.pathname).toBe('/intent/age-assurance')
+  })
 })

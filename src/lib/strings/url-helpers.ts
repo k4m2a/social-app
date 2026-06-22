@@ -2,17 +2,19 @@ import {AtUri} from '@atproto/api'
 import psl from 'psl'
 import TLDs from 'tlds'
 
+import {BRAND_DOMAIN, BRAND_HOST} from '#/lib/brand'
 import {BSKY_SERVICE} from '#/lib/constants'
 import {isInvalidHandle} from '#/lib/strings/handles'
 import {startUriToStarterPackUri} from '#/lib/strings/starter-pack'
 import {logger} from '#/logger'
 
-export const BSKY_APP_HOST = 'https://bsky.app'
+export const BSKY_APP_HOST = BRAND_HOST
 const BSKY_TRUSTED_HOSTS = [
   'bsky\\.app',
   'bsky\\.social',
   'blueskyweb\\.xyz',
   'blueskyweb\\.zendesk\\.com',
+  BRAND_DOMAIN.replace(/\./g, '\\.'),
   ...(__DEV__ ? ['localhost:19006', 'localhost:8100'] : []),
 ]
 
@@ -80,7 +82,7 @@ export function toShortUrl(url: string): string {
 
 export function toShareUrl(url: string): string {
   if (!url.startsWith('https')) {
-    const urlp = new URL('https://bsky.app')
+    const urlp = new URL(BSKY_APP_HOST)
     urlp.pathname = url
     url = urlp.toString()
   }
@@ -92,7 +94,7 @@ export function toBskyAppUrl(url: string): string {
 }
 
 export function isBskyAppUrl(url: string): boolean {
-  return url.startsWith('https://bsky.app/')
+  return url.startsWith('https://bsky.app/') || url.startsWith(`${BRAND_HOST}/`)
 }
 
 export function isRelativeUrl(url: string): boolean {
@@ -100,10 +102,7 @@ export function isRelativeUrl(url: string): boolean {
 }
 
 export function isBskyRSSUrl(url: string): boolean {
-  return (
-    (url.startsWith('https://bsky.app/') || isRelativeUrl(url)) &&
-    /\/rss\/?$/.test(url)
-  )
+  return (isBskyAppUrl(url) || isRelativeUrl(url)) && /\/rss\/?$/.test(url)
 }
 
 export function isExternalUrl(url: string): boolean {
