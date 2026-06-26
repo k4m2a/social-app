@@ -69,6 +69,7 @@ export type Brand = BrandConfig & {
     showStarterPacks: boolean
     showLiveNow: boolean
     showTrending: boolean
+    filterSearchToBrand?: boolean
   }
 
   /**

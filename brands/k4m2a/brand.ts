@@ -315,6 +315,7 @@ const brand: Brand = {
     showStarterPacks: true,
     showLiveNow: true,
     showTrending: false,
+    filterSearchToBrand: true,
   },
 
   palette: {

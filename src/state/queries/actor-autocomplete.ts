@@ -10,6 +10,7 @@ import {isJustAMute, moduiContainsHideableOffense} from '#/lib/moderation'
 import {logger} from '#/logger'
 import {STALE} from '#/state/queries'
 import {useAgent} from '#/state/session'
+import {getActiveBrand} from '#/brand/activeBrand'
 import {useModerationOpts} from '../preferences/moderation-opts'
 import {DEFAULT_LOGGED_OUT_PREFERENCES} from './preferences'
 
@@ -114,7 +115,20 @@ function computeSuggestions({
       items.push(item)
     }
   }
+  const brand = getActiveBrand()
+  const searchDomain = brand.features.filterSearchToBrand
+    ? new URL(brand.pds.serviceUrl).hostname
+    : null
+
   return items.filter(profile => {
+    if (searchDomain) {
+      const handle = profile.handle
+      const isDomainMatch =
+        handle === searchDomain || handle.endsWith(`.${searchDomain}`)
+      if (!isDomainMatch) {
+        return false
+      }
+    }
     const modui = moderateProfile(profile, moderationOpts).ui('profileList')
     const isExactMatch = q && profile.handle.toLowerCase() === q
     return (

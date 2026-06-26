@@ -9,6 +9,7 @@ import {
 
 import {STALE} from '#/state/queries'
 import {useAgent} from '#/state/session'
+import {getActiveBrand} from '#/brand/activeBrand'
 
 export const RQKEY_ROOT = 'actor-search'
 export const RQKEY = (query: string, limit?: number) => [
@@ -57,6 +58,10 @@ export function useActorSearch({
 function select(data: InfiniteData<AppBskyActorSearchActors.OutputSchema>) {
   // enforce uniqueness
   const dids = new Set()
+  const brand = getActiveBrand()
+  const searchDomain = brand.features.filterSearchToBrand
+    ? new URL(brand.pds.serviceUrl).hostname
+    : null
 
   return {
     ...data,
@@ -66,6 +71,14 @@ function select(data: InfiniteData<AppBskyActorSearchActors.OutputSchema>) {
           return false
         }
         dids.add(actor.did)
+        if (searchDomain) {
+          const handle = actor.handle
+          const isDomainMatch =
+            handle === searchDomain || handle.endsWith(`.${searchDomain}`)
+          if (!isDomainMatch) {
+            return false
+          }
+        }
         return true
       }),
     })),

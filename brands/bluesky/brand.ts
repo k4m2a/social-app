@@ -77,6 +77,7 @@ const brand: Brand = {
     showStarterPacks: true,
     showLiveNow: true,
     showTrending: true,
+    filterSearchToBrand: false,
   },
 
   palette: {

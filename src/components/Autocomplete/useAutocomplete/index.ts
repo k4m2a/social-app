@@ -13,6 +13,7 @@ import {
   type AutocompleteItemType,
   type AutocompleteProfile,
 } from '#/components/Autocomplete/types'
+import {getActiveBrand} from '#/brand/activeBrand'
 import {useEmojiSearch} from './useEmojiSearch'
 
 const DEFAULT_MOD_OPTS = {
@@ -130,6 +131,20 @@ function moderateProfileItem({
   item: AutocompleteProfile
   moderationOpts: ModerationOpts
 }) {
+  const brand = getActiveBrand()
+  const searchDomain = brand.features.filterSearchToBrand
+    ? new URL(brand.pds.serviceUrl).hostname
+    : null
+
+  if (searchDomain) {
+    const handle = item.profile.handle
+    const isDomainMatch =
+      handle === searchDomain || handle.endsWith(`.${searchDomain}`)
+    if (!isDomainMatch) {
+      return null
+    }
+  }
+
   const modui = moderateProfile(item.profile, moderationOpts).ui('profileList')
   const isExactMatch = query && item.profile.handle.toLowerCase() === query
 
