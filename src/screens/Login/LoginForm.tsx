@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react'
+import {useRef, useState} from 'react'
 import {Keyboard, type TextInput, View} from 'react-native'
 import {
   ComAtprotoServerCreateSession,
@@ -18,7 +18,6 @@ import {useLoggedOutViewControls} from '#/state/shell/logged-out'
 import {atoms as a, ios, useTheme, web} from '#/alf'
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {FormError} from '#/components/forms/FormError'
-import {HostingProvider} from '#/components/forms/HostingProvider'
 import * as TextField from '#/components/forms/TextField'
 import {At_Stroke2_Corner0_Rounded as At} from '#/components/icons/At'
 import {Lock_Stroke2_Corner0_Rounded as Lock} from '#/components/icons/Lock'
@@ -36,7 +35,7 @@ export const LoginForm = ({
   serviceDescription,
   initialHandle,
   setError,
-  setServiceUrl,
+  setServiceUrl: _setServiceUrl,
   onPressRetryConnect,
   onPressBack,
   onPressForgotPassword,
@@ -72,10 +71,6 @@ export const LoginForm = ({
   const requestNotificationsPermission = useRequestNotificationsPermission()
   const {setShowLoggedOut} = useLoggedOutViewControls()
   const setHasCheckedForStarterPack = useSetHasCheckedForStarterPack()
-
-  const onPressSelectService = useCallback(() => {
-    Keyboard.dismiss()
-  }, [])
 
   const onPressNext = async () => {
     if (isProcessing) return
@@ -177,16 +172,6 @@ export const LoginForm = ({
 
   return (
     <FormContainer testID="loginForm" titleText={<Trans>Sign in</Trans>}>
-      <View>
-        <TextField.LabelText>
-          <Trans>Hosting provider</Trans>
-        </TextField.LabelText>
-        <HostingProvider
-          serviceUrl={serviceUrl}
-          onSelectServiceUrl={setServiceUrl}
-          onOpenDialog={onPressSelectService}
-        />
-      </View>
       <View>
         <TextField.LabelText>
           <Trans>Account</Trans>

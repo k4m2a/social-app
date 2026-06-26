@@ -1,5 +1,5 @@
-import {useCallback, useState} from 'react'
-import {Keyboard, View} from 'react-native'
+import {useState} from 'react'
+import {View} from 'react-native'
 import {type ComAtprotoServerDescribeServer} from '@atproto/api'
 import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
@@ -12,7 +12,6 @@ import {Agent} from '#/state/session/agent'
 import {atoms as a, useTheme, web} from '#/alf'
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {FormError} from '#/components/forms/FormError'
-import {HostingProvider} from '#/components/forms/HostingProvider'
 import * as TextField from '#/components/forms/TextField'
 import {At_Stroke2_Corner0_Rounded as At} from '#/components/icons/At'
 import {Loader} from '#/components/Loader'
@@ -27,7 +26,7 @@ export const ForgotPasswordForm = ({
   serviceUrl,
   serviceDescription,
   setError,
-  setServiceUrl,
+  setServiceUrl: _setServiceUrl,
   onPressBack,
   onEmailSent,
 }: {
@@ -43,10 +42,6 @@ export const ForgotPasswordForm = ({
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const {_} = useLingui()
-
-  const onPressSelectService = useCallback(() => {
-    Keyboard.dismiss()
-  }, [])
 
   const onPressNext = async () => {
     if (!EmailValidator.validate(email)) {
@@ -80,16 +75,6 @@ export const ForgotPasswordForm = ({
     <FormContainer
       testID="forgotPasswordForm"
       titleText={<Trans>Reset password</Trans>}>
-      <View>
-        <TextField.LabelText>
-          <Trans>Hosting provider</Trans>
-        </TextField.LabelText>
-        <HostingProvider
-          serviceUrl={serviceUrl}
-          onSelectServiceUrl={setServiceUrl}
-          onOpenDialog={onPressSelectService}
-        />
-      </View>
       <View>
         <TextField.LabelText>
           <Trans>Email address</Trans>
