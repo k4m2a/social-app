@@ -40,10 +40,11 @@ export function SignupQueued() {
     try {
       const res = await agent.com.atproto.temp.checkSignupQueue()
       if (res.data.activated) {
-        // ready to go, exchange the access token for a usable one and kick off onboarding
+        // ready to go, exchange the access token for a usable one
         await agent.sessionManager.refreshSession()
         if (!isSignupQueued(agent.session?.accessJwt)) {
-          onboardingDispatch({type: 'start'})
+          // onboarding is skipped entirely, so mark it complete right away
+          onboardingDispatch({type: 'finish'})
         }
       } else {
         // not ready, update UI
