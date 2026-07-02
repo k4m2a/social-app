@@ -140,10 +140,10 @@ export type Brand = BrandConfig & {
    */
   copy?: {
     /**
-     * Replaces the generic "What's up?" greeting shown as the compose prompt
-     * next to the user's avatar in the feed and the signed-out web splash
-     * subtitle. Reads as the brand's tagline. The composer input placeholder
-     * uses its own fixed "Share what you're exploring" copy, not this field.
+     * Replaces the generic "What's up?" greeting shown as the signed-out web
+     * splash subtitle. Reads as the brand's tagline. Does not affect the
+     * compose prompt in the feed or the composer input placeholder, which
+     * keep the default "What's up?" copy.
      */
     composerPrompt?: string
   }
