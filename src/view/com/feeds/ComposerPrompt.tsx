@@ -22,10 +22,12 @@ import {Image_Stroke2_Corner0_Rounded as ImageIcon} from '#/components/icons/Ima
 import {SubtleHover} from '#/components/SubtleHover'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
+import {useBrand} from '#/brand/context'
 import {IS_NATIVE} from '#/env'
 
 export function ComposerPrompt() {
   const t = useTheme()
+  const brand = useBrand()
   const ax = useAnalytics()
   const {_} = useLingui()
   const {openComposer} = useOpenComposer()
@@ -189,7 +191,7 @@ export function ComposerPrompt() {
             a.text_md,
             {includeFontPadding: false},
           ]}>
-          <Trans>What's up?</Trans>
+          {brand.copy?.composerPrompt ?? <Trans>What's up?</Trans>}
         </Text>
         <View style={[a.flex_row, a.gap_md]}>
           {IS_NATIVE && (

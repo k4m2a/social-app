@@ -311,6 +311,10 @@ const brand: Brand = {
     logotypeHeaderWidth: 150,
   },
 
+  copy: {
+    composerPrompt: 'Connect with sincere seekers',
+  },
+
   welcomeModal: {
     headline: 'Conversations to understand consciousness',
     subtitle: 'CoSeeker is invite-only for sincere seekers.',

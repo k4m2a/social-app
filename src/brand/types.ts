@@ -131,6 +131,23 @@ export type Brand = BrandConfig & {
   }
 
   /**
+   * Narrow slot for brand-specific copy that replaces generic Bluesky strings.
+   * These are plain strings rather than Lingui-extracted, because they are
+   * brand-specific and may be in the brand's own language (e.g. MDParivaar is
+   * Hindi). Keep this capped and only add fields when a brand proves it needs
+   * genuinely different copy for a specific string site. Omit a field to fall
+   * back to the default translated string.
+   */
+  copy?: {
+    /**
+     * Replaces the generic "What's up?" greeting shown as the compose prompt
+     * next to the user's avatar in the feed, the composer input placeholder,
+     * and the signed-out web splash subtitle. Reads as the brand's tagline.
+     */
+    composerPrompt?: string
+  }
+
+  /**
    * Copy + actions for the web-only one-time welcome modal shown to signed-out
    * visitors on the homepage (`src/components/WelcomeModal.tsx`). Brand-identity
    * copy (headline / subtitle / attribution) is stored as plain strings here
