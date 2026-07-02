@@ -256,12 +256,11 @@ export function StepProfile() {
         <View style={[a.gap_sm]}>
           <OnboardingPosition />
           <OnboardingTitleText>
-            <Trans>Give your profile a face</Trans>
+            <Trans>Add your profile picture</Trans>
           </OnboardingTitleText>
           <OnboardingDescriptionText>
             <Trans>
-              Help people know you're not a bot by uploading a picture or
-              creating an avatar.
+              A visible profile helps conversations begin with trust.
             </Trans>
           </OnboardingDescriptionText>
         </View>
