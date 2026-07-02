@@ -135,7 +135,6 @@ import * as Prompt from '#/components/Prompt'
 import * as Toast from '#/components/Toast'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
-import {useBrand} from '#/brand/context'
 import {
   IS_ANDROID,
   IS_IOS,
@@ -1586,7 +1585,6 @@ let ComposerPost = memo(function ComposerPost({
   const {currentAccount} = useSession()
   const currentDid = currentAccount!.did
   const {t: l} = useLingui()
-  const brand = useBrand()
   const {data: currentProfile} = useProfileQuery({did: currentDid})
   const richtext = post.richtext
   const isTextOnly = !post.embed.link && !post.embed.quote && !post.embed.media
@@ -1595,7 +1593,7 @@ let ComposerPost = memo(function ComposerPost({
     ? isFirstPost
       ? l`Write your reply`
       : l`Add another post`
-    : (brand.copy?.composerPrompt ?? l`What's up?`)
+    : l`Share what you’re exploring`
   const discardPromptControl = Prompt.usePromptControl()
 
   const dispatchPost = useCallback(
