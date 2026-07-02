@@ -12,6 +12,7 @@ import {
 import {dateDiff, useGetTimeAgo} from '#/lib/hooks/useTimeAgo'
 import {useIsBirthdateUpdateAllowed} from '#/state/birthdate'
 import {useSessionApi} from '#/state/session'
+import {Logotype} from '#/view/icons/Logotype'
 import {DeactivateAccountDialog} from '#/screens/Settings/components/DeactivateAccountDialog'
 import {DeleteAccountDialog} from '#/screens/Settings/components/DeleteAccountDialog'
 import {atoms as a, useBreakpoints, useTheme, web} from '#/alf'
@@ -24,7 +25,6 @@ import * as Dialog from '#/components/Dialog'
 import {useDialogControl} from '#/components/Dialog'
 import {BirthDateSettingsDialog} from '#/components/dialogs/BirthDateSettings'
 import {DeviceLocationRequestDialog} from '#/components/dialogs/DeviceLocationRequestDialog'
-import {Full as Logo} from '#/components/icons/Logo'
 import {ShieldCheck_Stroke2_Corner0_Rounded as ShieldIcon} from '#/components/icons/Shield'
 import {createStaticClick, SimpleInlineLinkText} from '#/components/Link'
 import {Outlet as PortalOutlet} from '#/components/Portal'
@@ -240,7 +240,7 @@ export function NoAccessScreen() {
             )}
 
             <View style={[a.pt_lg, a.gap_xl, {maxWidth: 280}]}>
-              <Logo width={120} textFill={t.atoms.text.color} />
+              <Logotype width={120} fill={t.atoms.text.color} />
               <Text
                 style={[
                   a.text_sm,
