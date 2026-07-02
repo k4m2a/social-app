@@ -358,6 +358,10 @@ const brand: Brand = {
     logotypeHeaderWidth: 110,
   },
 
+  copy: {
+    composerPrompt: 'Infrastructure for human awakening',
+  },
+
   welcomeModal: {
     headline: 'Together, pave the way for humanity to awaken.',
     subtitle: 'Join the team building the infrastructure for human awakening.',

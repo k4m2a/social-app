@@ -157,6 +157,10 @@ const brand: Brand = {
     logomark: MD_ICON_SHAPE,
   },
 
+  copy: {
+    composerPrompt: 'साथ-साथ अध्ययन',
+  },
+
   welcomeModal: {
     headline: 'व्यक्ति सार्थक संवाद से, बोध तक सार्थक होना संभव है।',
     attribution: '- श्री ए. नागराज',
