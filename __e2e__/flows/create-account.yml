@@ -46,4 +46,4 @@ appId: xyz.blueskyweb.app
       id: "handleAvailableCheck"
 - tapOn:
     id: "nextBtn"
-- assertVisible: "Give your profile a face"
+- assertVisible: "Add your profile picture"
