@@ -160,7 +160,7 @@ export function StepHandle() {
       <View style={[a.gap_sm, a.pt_lg, a.z_10]}>
         <View>
           <TextField.LabelText>
-            <Trans>Name</Trans>
+            <Trans>Full Name</Trans>
           </TextField.LabelText>
           <TextField.Root
             isInvalid={!!state.error && state.errorField === 'display-name'}>
@@ -177,7 +177,7 @@ export function StepHandle() {
                   )
                 }
               }}
-              label={_(msg`Your name`)}
+              label={_(msg`Your full name`)}
               defaultValue={nameDraft}
               autoCapitalize="words"
               autoComplete="name"
