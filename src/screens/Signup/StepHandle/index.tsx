@@ -12,6 +12,7 @@ import {Plural, Trans} from '@lingui/react/macro'
 
 import {
   createFullHandle,
+  makeValidHandle,
   MAX_SERVICE_HANDLE_LENGTH,
   validateServiceHandle,
 } from '#/lib/strings/handles'
@@ -37,6 +38,13 @@ export function StepHandle() {
   const t = useTheme()
   const {state, dispatch} = useSignupContext()
   const [draftValue, setDraftValue] = useState(state.handle)
+  const [nameDraft, setNameDraft] = useState(state.displayName)
+  /*
+   * Once the user edits the handle themselves (or picks a suggestion), stop
+   * auto-filling it from the name. Initialized true when returning to this
+   * step with a handle already chosen.
+   */
+  const [handleTouched, setHandleTouched] = useState(state.handle !== '')
   const isNextLoading = useThrottledValue(state.isLoading, 500)
 
   const validCheck = validateServiceHandle(draftValue, state.userDomain)
@@ -59,6 +67,10 @@ export function StepHandle() {
     dispatch({
       type: 'setHandle',
       value: handle,
+    })
+    dispatch({
+      type: 'setDisplayName',
+      value: nameDraft.trim(),
     })
 
     if (!validCheck.overall) {
@@ -116,6 +128,10 @@ export function StepHandle() {
       type: 'setHandle',
       value: handle,
     })
+    dispatch({
+      type: 'setDisplayName',
+      value: nameDraft.trim(),
+    })
     dispatch({type: 'prev'})
     ax.metric('signup:backPressed', {activeStep: state.activeStep})
   }
@@ -128,7 +144,9 @@ export function StepHandle() {
     !isHandleAvailable.available
   const isNotReady = isPending || !hasDebounceSettled
   const isNextDisabled =
-    !validCheck.overall || !!state.error || isNotReady ? true : isHandleTaken
+    !nameDraft.trim() || !validCheck.overall || !!state.error || isNotReady
+      ? true
+      : isHandleTaken
 
   const textFieldInvalid =
     isHandleTaken ||
@@ -141,6 +159,37 @@ export function StepHandle() {
     <>
       <View style={[a.gap_sm, a.pt_lg, a.z_10]}>
         <View>
+          <TextField.LabelText>
+            <Trans>Name</Trans>
+          </TextField.LabelText>
+          <TextField.Root
+            isInvalid={!!state.error && state.errorField === 'display-name'}>
+            <TextField.Input
+              testID="displayNameInput"
+              onChangeText={val => {
+                if (state.error) {
+                  dispatch({type: 'setError', value: ''})
+                }
+                setNameDraft(val)
+                if (!handleTouched) {
+                  setDraftValue(
+                    makeValidHandle(val).slice(0, MAX_SERVICE_HANDLE_LENGTH),
+                  )
+                }
+              }}
+              label={_(msg`Your name`)}
+              defaultValue={nameDraft}
+              autoCapitalize="words"
+              autoComplete="name"
+              autoCorrect={false}
+              autoFocus
+            />
+          </TextField.Root>
+        </View>
+        <View>
+          <TextField.LabelText>
+            <Trans>Username</Trans>
+          </TextField.LabelText>
           <TextField.Root isInvalid={textFieldInvalid}>
             <TextField.Icon icon={AtIcon} />
             <TextField.Input
@@ -149,6 +198,7 @@ export function StepHandle() {
                 if (state.error) {
                   dispatch({type: 'setError', value: ''})
                 }
+                setHandleTouched(true)
                 setDraftValue(val.toLocaleLowerCase())
               }}
               label={state.userDomain}
@@ -156,7 +206,6 @@ export function StepHandle() {
               keyboardType="ascii-capable" // fix for iOS replacing -- with —
               autoCapitalize="none"
               autoCorrect={false}
-              autoFocus
               autoComplete="off"
             />
             {draftValue.length > 0 && (
@@ -194,6 +243,7 @@ export function StepHandle() {
                     <HandleSuggestions
                       suggestions={isHandleAvailable.suggestions}
                       onSelect={suggestion => {
+                        setHandleTouched(true)
                         setDraftValue(
                           suggestion.handle.slice(
                             0,

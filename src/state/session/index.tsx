@@ -176,8 +176,14 @@ export function Provider({children}: React.PropsWithChildren<{}>) {
         {session: utils.accountToSessionMetadata(account)},
       )
       addSessionDebugLog({type: 'method:end', method: 'login', account})
+      /*
+       * Onboarding should only ever appear right after signup. Reset it on
+       * login so stale persisted state (e.g. an interrupted onboarding on
+       * this device) does not re-trigger it.
+       */
+      onboardingDispatch({type: 'skip'})
     },
-    [ax, store, onAgentSessionChange, cancelPendingTask],
+    [ax, store, onAgentSessionChange, cancelPendingTask, onboardingDispatch],
   )
 
   const logoutCurrentAccount = useCallback<

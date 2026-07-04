@@ -23,21 +23,9 @@ appId: xyz.blueskyweb.app
 - waitForAnimationToEnd
 - tapOn: "Done"
 - waitForAnimationToEnd
+# onboarding is a single step: continuing saves and lands on Home
 - tapOn:
     id: "onboardingContinue"
-- assertVisible: "What are your interests?"
-- tapOn:
-    id: "onboardingContinue"
-- assertVisible: "Suggested for you"
-# mock server doesn't have suggestions api
-- tapOn: "Skip to next step"
-- swipe:
-    direction: "LEFT"
-- swipe:
-    direction: "LEFT"
-- assertVisible: "Complete onboarding and start using your account"
-- tapOn:
-    id: "onboardingFinish"
 - tapOn:
     label: "NUX, if applicable"
     text: "Close"

@@ -72,23 +72,20 @@ export type OnboardingAction =
         | undefined
     }
 
-export function createInitialOnboardingState(
-  {
-    starterPacksStepEnabled,
-    findContactsStepEnabled,
-  }: {
-    starterPacksStepEnabled: boolean
-    findContactsStepEnabled: boolean
-  } = {starterPacksStepEnabled: true, findContactsStepEnabled: false},
-): OnboardingState {
+export function createInitialOnboardingState(): OnboardingState {
+  /*
+   * Onboarding is trimmed to just the profile-picture step. The other steps
+   * (and their components) still exist but are disabled. The finishing side
+   * effects run from StepProfile's continue button via useFinishOnboarding.
+   */
   const screens: OnboardingState['screens'] = {
     profile: true,
-    interests: true,
-    'suggested-accounts': true,
-    'suggested-starterpacks': starterPacksStepEnabled,
-    'find-contacts-intro': findContactsStepEnabled,
-    'find-contacts': findContactsStepEnabled,
-    finished: true,
+    interests: false,
+    'suggested-accounts': false,
+    'suggested-starterpacks': false,
+    'find-contacts-intro': false,
+    'find-contacts': false,
+    finished: false,
   }
 
   return {
@@ -148,10 +145,7 @@ export function reducer(
       break
     }
     case 'finish': {
-      next = createInitialOnboardingState({
-        starterPacksStepEnabled: s.screens['suggested-starterpacks'],
-        findContactsStepEnabled: s.screens['find-contacts'],
-      })
+      next = createInitialOnboardingState()
       break
     }
     case 'setInterestsStepResults': {
