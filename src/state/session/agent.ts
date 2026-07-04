@@ -211,6 +211,19 @@ export async function createAgentAndCreateAccount(
         logger.info(`createAgentAndCreateAccount: failed to set initial feeds`)
         throw e
       }),
+      /*
+       * Auto-follow the brand account. This used to happen at the end of
+       * onboarding (StepFinished), which is now skipped entirely, so it
+       * happens here as part of account setup instead.
+       */
+      networkRetry(3, () => {
+        return agent.follow(getActiveBrand().appAccountDid)
+      }).catch(e => {
+        logger.info(
+          `createAgentAndCreateAccount: failed to follow brand account`,
+        )
+        throw e
+      }),
       // wait for AA data to load first, then check state
       aa.then(() => {
         const {flags} = unsafeGetAndComputeAgeAssurance({did: account.did})
