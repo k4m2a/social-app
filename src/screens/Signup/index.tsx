@@ -190,7 +190,7 @@ export function Signup({onPressBack}: {onPressBack: () => void}) {
                       {state.activeStep === SignupStep.INFO ? (
                         <Trans>Your account</Trans>
                       ) : state.activeStep === SignupStep.HANDLE ? (
-                        <Trans>Choose your username</Trans>
+                        <Trans>Your name and username</Trans>
                       ) : (
                         <Trans>Complete the challenge</Trans>
                       )}

@@ -38,9 +38,14 @@ appId: xyz.blueskyweb.app
     point: 20%,20%
     repeat: 2
     delay: 1000
+# enter the handle first: typing the name first would auto-suggest a handle
+# and inputText would append to it
 - tapOn:
     id: "handleInput"
 - inputText: "e2e-test"
+- tapOn:
+    id: "displayNameInput"
+- inputText: "E2E Test"
 - extendedWaitUntil:
     visible:
       id: "handleAvailableCheck"

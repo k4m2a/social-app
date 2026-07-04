@@ -127,6 +127,7 @@ export async function createAgentAndCreateAccount(
     email,
     password,
     handle,
+    displayName,
     birthDate,
     inviteCode,
     verificationPhone,
@@ -136,6 +137,7 @@ export async function createAgentAndCreateAccount(
     email: string
     password: string
     handle: string
+    displayName?: string
     birthDate: Date
     inviteCode?: string
     verificationPhone?: string
@@ -176,13 +178,13 @@ export async function createAgentAndCreateAccount(
   const aa = prefetchAgeAssuranceServerData({agent})
 
   /*
-   * With onboarding skipped, the Home screen renders as soon as account
-   * creation resolves, and its preferences fetch calls getPreferences. If
-   * that runs before any savedFeeds pref exists on the server, @atproto/api
-   * writes back a following-only default, clobbering the brand defaults.
-   * So the feed seeding (and the brand follow, so the following feed is not
-   * empty on first render) must complete before we return. Failures are
-   * logged but do not block signup.
+   * The first getPreferences call after signup (which can happen as soon as
+   * the app shell renders) writes back a following-only savedFeeds default
+   * when no savedFeeds pref exists yet, clobbering the brand defaults. So
+   * the feed seeding (and the brand follow, so the following feed is not
+   * empty on first render) must complete before we return. This also covers
+   * users who abandon onboarding before its final save. Failures are logged
+   * but do not block signup.
    */
   if (IS_PROD_SERVICE(service)) {
     await Promise.allSettled([
@@ -230,7 +232,7 @@ export async function createAgentAndCreateAccount(
       networkRetry(3, () => {
         return agent.upsertProfile(prev => {
           const next: Un$Typed<AppBskyActorProfile.Record> = prev || {}
-          next.displayName = handle
+          next.displayName = displayName?.trim() || handle
           next.createdAt = createdAt
           return next
         })

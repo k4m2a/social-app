@@ -38,6 +38,7 @@ type ErrorField =
   | 'handle'
   | 'password'
   | 'date-of-birth'
+  | 'display-name'
 
 export type SignupState = {
   analytics?: AnalyticsContextType
@@ -54,6 +55,7 @@ export type SignupState = {
   password: string
   inviteCode: string
   handle: string
+  displayName: string
 
   error: string
   errorField?: ErrorField
@@ -80,6 +82,7 @@ export type SignupAction =
   | {type: 'setDateOfBirth'; value: Date}
   | {type: 'setInviteCode'; value: string}
   | {type: 'setHandle'; value: string}
+  | {type: 'setDisplayName'; value: string}
   | {type: 'setError'; value: string; field?: ErrorField}
   | {type: 'clearError'}
   | {type: 'setIsLoading'; value: boolean}
@@ -100,6 +103,7 @@ export const initialState: SignupState = {
   email: '',
   password: '',
   handle: '',
+  displayName: '',
   inviteCode: '',
 
   error: '',
@@ -116,6 +120,7 @@ export const initialState: SignupState = {
     handle: 0,
     password: 0,
     'date-of-birth': 0,
+    'display-name': 0,
   },
   backgroundCount: 0,
 }
@@ -189,6 +194,10 @@ export function reducer(s: SignupState, a: SignupAction): SignupState {
     }
     case 'setHandle': {
       next.handle = a.value
+      break
+    }
+    case 'setDisplayName': {
+      next.displayName = a.value
       break
     }
     case 'setIsLoading': {
@@ -287,6 +296,14 @@ export function useSubmitSignup() {
           field: 'password',
         })
       }
+      if (!state.displayName.trim()) {
+        dispatch({type: 'setStep', value: SignupStep.HANDLE})
+        return dispatch({
+          type: 'setError',
+          value: l`Please enter your name.`,
+          field: 'display-name',
+        })
+      }
       if (!state.handle) {
         dispatch({type: 'setStep', value: SignupStep.HANDLE})
         return dispatch({
@@ -318,6 +335,7 @@ export function useSubmitSignup() {
             service: state.serviceUrl,
             email: state.email,
             handle: createFullHandle(state.handle, state.userDomain),
+            displayName: state.displayName.trim(),
             password: state.password,
             birthDate: state.dateOfBirth,
             inviteCode: state.inviteCode.trim(),
@@ -337,7 +355,7 @@ export function useSubmitSignup() {
          * Must happen last so that if the user has multiple tabs open and
          * createAccount fails, one tab is not stuck in onboarding — Eric
          */
-        onboardingDispatch({type: 'finish'})
+        onboardingDispatch({type: 'start'})
       } catch (err) {
         const e = err as Error
         let errMsg = e.toString()

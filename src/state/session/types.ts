@@ -16,6 +16,11 @@ export type SessionApiContext = {
       email: string
       password: string
       handle: string
+      /**
+       * The user's chosen display name, set on their profile right after the
+       * account is created. Falls back to the handle when empty.
+       */
+      displayName?: string
       birthDate: Date
       inviteCode?: string
       verificationPhone?: string

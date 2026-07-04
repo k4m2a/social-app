@@ -114,15 +114,9 @@ export function isOnboardingActive() {
 }
 
 function compute(state: persisted.Schema['onboarding']): StateContext {
-  /*
-   * Onboarding is disabled entirely (issue #67) - users go straight into
-   * the app after signup. The persisted step is deliberately ignored so
-   * stale state written by older builds (or any stray 'start' dispatch)
-   * can never re-trigger the onboarding screens.
-   */
   return {
     ...state,
-    isActive: false,
-    isComplete: true,
+    isActive: state.step !== 'Home',
+    isComplete: state.step === 'Home',
   }
 }

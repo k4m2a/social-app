@@ -41,11 +41,13 @@ import {
   PlaceholderCanvas,
   type PlaceholderCanvasRef,
 } from '#/screens/Onboarding/StepProfile/PlaceholderCanvas'
+import {useFinishOnboarding} from '#/screens/Onboarding/useFinishOnboarding'
 import {atoms as a, useBreakpoints, useTheme} from '#/alf'
-import {Button, ButtonText} from '#/components/Button'
+import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import * as Dialog from '#/components/Dialog'
 import {useSheetWrapper} from '#/components/Dialog/sheet-wrapper'
 import {CircleInfo_Stroke2_Corner0_Rounded} from '#/components/icons/CircleInfo'
+import {Loader} from '#/components/Loader'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
 import {IS_NATIVE, IS_WEB} from '#/env'
@@ -88,6 +90,7 @@ export function StepProfile() {
   const [error, setError] = useState('')
 
   const {state, dispatch} = useOnboardingInternalState()
+  const {finishOnboarding, saving} = useFinishOnboarding()
   const [avatar, setAvatar] = useState<Avatar>({
     image: state.profileStepResults?.image,
     placeholder: state.profileStepResults.creatorState?.emoji || emojiItems.at,
@@ -158,9 +161,14 @@ export function StepProfile() {
       imageUri = await canvasRef.current?.capture()
     }
 
+    /*
+     * The results are passed to finishOnboarding directly (rather than read
+     * from context) because the dispatch above won't have flushed yet. The
+     * dispatch still runs to keep context state consistent.
+     */
+    let results = state.profileStepResults
     if (imageUri) {
-      dispatch({
-        type: 'setProfileStepResults',
+      results = {
         image: avatar.image,
         imageUri,
         imageMime: avatar.image?.mime ?? 'image/jpeg',
@@ -169,12 +177,22 @@ export function StepProfile() {
           emoji: avatar.placeholder,
           backgroundColor: avatar.backgroundColor,
         },
+      }
+      dispatch({
+        type: 'setProfileStepResults',
+        image: results.image,
+        imageUri: results.imageUri,
+        imageMime: results.imageMime ?? 'image/jpeg',
+        isCreatedAvatar: results.isCreatedAvatar,
+        creatorState: results.creatorState,
       })
     }
 
-    dispatch({type: 'next'})
     ax.metric('onboarding:profile:nextPressed', {})
-  }, [ax, avatar, dispatch])
+
+    // This is the only onboarding step, so continuing finishes onboarding.
+    await finishOnboarding(results)
+  }, [ax, avatar, dispatch, state.profileStepResults, finishOnboarding])
 
   const onDoneCreating = useCallback(() => {
     setAvatar(prev => ({
@@ -297,17 +315,20 @@ export function StepProfile() {
               testID="onboardingContinue"
               color="primary"
               size="large"
-              label={_(msg`Continue to next step`)}
+              label={_(msg`Finish and start using your account`)}
+              disabled={saving}
               onPress={onContinue}>
               <ButtonText>
                 <Trans>Continue</Trans>
               </ButtonText>
+              {saving && <ButtonIcon icon={Loader} />}
             </Button>
             <Button
               testID="onboardingAvatarCreator"
               color="primary_subtle"
               size="large"
               label={_(msg`Open avatar creator`)}
+              disabled={saving}
               onPress={onSecondaryPress}>
               <ButtonText>
                 {avatar.useCreatedAvatar ? (

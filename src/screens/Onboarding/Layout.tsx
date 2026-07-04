@@ -223,6 +223,11 @@ export function OnboardingPosition() {
   const {state} = useOnboardingInternalState()
   const t = useTheme()
 
+  // a single-step flow needs no "Step 1 of 1" indicator
+  if (state.totalSteps <= 1) {
+    return null
+  }
+
   return (
     <Text style={[a.text_sm, a.font_medium, t.atoms.text_contrast_medium]}>
       <Trans>
