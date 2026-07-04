@@ -175,7 +175,47 @@ export async function createAgentAndCreateAccount(
   // do this last
   const aa = prefetchAgeAssuranceServerData({agent})
 
-  // Not awaited so that we can still get into onboarding.
+  /*
+   * With onboarding skipped, the Home screen renders as soon as account
+   * creation resolves, and its preferences fetch calls getPreferences. If
+   * that runs before any savedFeeds pref exists on the server, @atproto/api
+   * writes back a following-only default, clobbering the brand defaults.
+   * So the feed seeding (and the brand follow, so the following feed is not
+   * empty on first render) must complete before we return. Failures are
+   * logged but do not block signup.
+   */
+  if (IS_PROD_SERVICE(service)) {
+    await Promise.allSettled([
+      networkRetry(2, () => {
+        return agent.overwriteSavedFeeds(
+          getActiveBrand().defaultFeeds.map(feed => ({
+            ...feed,
+            id: TID.nextStr(),
+          })),
+        )
+      }).catch(e => {
+        logger.error(
+          `createAgentAndCreateAccount: failed to set initial feeds`,
+          {safeMessage: e},
+        )
+      }),
+      /*
+       * Auto-follow the brand account. This used to happen at the end of
+       * onboarding (StepFinished), which is now skipped entirely, so it
+       * happens here as part of account setup instead.
+       */
+      networkRetry(2, () => {
+        return agent.follow(getActiveBrand().appAccountDid)
+      }).catch(e => {
+        logger.error(
+          `createAgentAndCreateAccount: failed to follow brand account`,
+          {safeMessage: e},
+        )
+      }),
+    ])
+  }
+
+  // Not awaited so that we can still get into the app quickly.
   // This is OK because we won't let you toggle adult stuff until you set the date.
   if (IS_PROD_SERVICE(service)) {
     void Promise.allSettled([
@@ -197,30 +237,6 @@ export async function createAgentAndCreateAccount(
       }).catch(e => {
         logger.info(
           `createAgentAndCreateAccount: failed to set initial profile`,
-        )
-        throw e
-      }),
-      networkRetry(1, () => {
-        return agent.overwriteSavedFeeds(
-          getActiveBrand().defaultFeeds.map(feed => ({
-            ...feed,
-            id: TID.nextStr(),
-          })),
-        )
-      }).catch(e => {
-        logger.info(`createAgentAndCreateAccount: failed to set initial feeds`)
-        throw e
-      }),
-      /*
-       * Auto-follow the brand account. This used to happen at the end of
-       * onboarding (StepFinished), which is now skipped entirely, so it
-       * happens here as part of account setup instead.
-       */
-      networkRetry(3, () => {
-        return agent.follow(getActiveBrand().appAccountDid)
-      }).catch(e => {
-        logger.info(
-          `createAgentAndCreateAccount: failed to follow brand account`,
         )
         throw e
       }),
