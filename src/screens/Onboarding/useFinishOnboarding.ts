@@ -103,28 +103,33 @@ export function useFinishOnboarding() {
         })(),
         (async () => {
           /*
-           * Default feeds are seeded at account creation; only rewrite them
-           * when starter-pack feeds need to be appended.
+           * Authoritatively pin the brand default feeds (brand feed +
+           * following), plus any starter-pack feeds. Feeds are also seeded at
+           * account creation, but that can be lost: if no savedFeedsPrefV2
+           * exists yet, the first getPreferences() synthesizes and persists a
+           * following-only default, permanently dropping the brand feed. This
+           * runs late (after the session is live) and unconditionally, so it
+           * reliably restores the brand feed regardless of that race.
            */
-          if (starterPack && starterPack.feeds?.length) {
-            const feedsToSave: AppBskyActorDefs.SavedFeed[] = [
-              {
-                ...DISCOVER_SAVED_FEED,
-                id: TID.nextStr(),
-              },
-              {
-                ...TIMELINE_SAVED_FEED,
-                id: TID.nextStr(),
-              },
-              ...starterPack.feeds.map(f => ({
-                type: 'feed',
-                value: f.uri,
-                pinned: true,
-                id: TID.nextStr(),
-              })),
-            ]
-            await agent.overwriteSavedFeeds(feedsToSave)
-          }
+          const feedsToSave: AppBskyActorDefs.SavedFeed[] = [
+            {
+              ...DISCOVER_SAVED_FEED,
+              id: TID.nextStr(),
+            },
+            {
+              ...TIMELINE_SAVED_FEED,
+              id: TID.nextStr(),
+            },
+            ...(starterPack?.feeds?.length
+              ? starterPack.feeds.map(f => ({
+                  type: 'feed',
+                  value: f.uri,
+                  pinned: true,
+                  id: TID.nextStr(),
+                }))
+              : []),
+          ]
+          await agent.overwriteSavedFeeds(feedsToSave)
         })(),
         (async () => {
           const {imageUri, imageMime} = profileStepResults
