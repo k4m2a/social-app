@@ -15,14 +15,16 @@ import {UserAvatar} from '#/view/com/util/UserAvatar'
 import {atoms as a, useTheme, web} from '#/alf'
 import {useInteractionState} from '#/components/hooks/useInteractionState'
 import {FilterTimeline_Stroke2_Corner0_Rounded as FilterTimeline} from '#/components/icons/FilterTimeline'
-import {PlusSmall_Stroke2_Corner0_Rounded as Plus} from '#/components/icons/Plus'
-import {Link} from '#/components/Link'
+// Temporarily hidden with the "More feeds" link below.
+// import {PlusSmall_Stroke2_Corner0_Rounded as Plus} from '#/components/icons/Plus'
+// import {Link} from '#/components/Link'
 import {Text} from '#/components/Typography'
 import {useAnalytics} from '#/analytics'
 
 export function DesktopFeeds() {
   const t = useTheme()
-  const {_} = useLingui()
+  // Temporarily hidden with the "More feeds" link below.
+  // const {_} = useLingui()
   const ax = useAnalytics()
   const {data: pinnedFeedInfos, error, isLoading} = usePinnedFeedsInfos()
   const selectedFeed = useSelectedFeed()
@@ -101,7 +103,8 @@ export function DesktopFeeds() {
         )
       })}
 
-      <Link
+      {/* Temporarily hidden: unfinished Bluesky-derived "More feeds" link. */}
+      {/* <Link
         to="/feeds"
         label={_(msg`More feeds`)}
         style={[
@@ -155,7 +158,7 @@ export function DesktopFeeds() {
             </>
           )
         }}
-      </Link>
+      </Link> */}
     </View>
   )
 }

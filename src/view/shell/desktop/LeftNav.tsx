@@ -53,18 +53,20 @@ import {
 import {type Props as SVGIconProps} from '#/components/icons/common'
 import {DotGrid3x1_Stroke2_Corner0_Rounded as EllipsisIcon} from '#/components/icons/DotGrid'
 import {EditBig_Stroke2_Corner2_Rounded as EditBigIcon} from '#/components/icons/EditBig'
-import {
-  Hashtag_Filled_Corner0_Rounded as HashtagFilledIcon,
-  Hashtag_Stroke2_Corner0_Rounded as HashtagIcon,
-} from '#/components/icons/Hashtag'
+// Temporarily hidden with the Explore and Feeds nav items below.
+// import {
+//   Hashtag_Filled_Corner0_Rounded as HashtagFilledIcon,
+//   Hashtag_Stroke2_Corner0_Rounded as HashtagIcon,
+// } from '#/components/icons/Hashtag'
 import {
   HomeOpen_Filled_Corner0_Rounded as HomeFilledIcon,
   HomeOpen_Stoke2_Corner0_Rounded as HomeIcon,
 } from '#/components/icons/HomeOpen'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilledIcon,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlassIcon,
-} from '#/components/icons/MagnifyingGlass'
+// Temporarily hidden with the Explore and Feeds nav items below.
+// import {
+//   MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilledIcon,
+//   MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlassIcon,
+// } from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as MessageIcon,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilledIcon,
@@ -673,7 +675,8 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
               active: HomeFilledIcon,
             }}
           />
-          <NavItem
+          {/* Temporarily hidden: unfinished Bluesky-derived Explore feature. */}
+          {/* <NavItem
             label={l`Explore`}
             href="/search"
             navItem="search"
@@ -682,7 +685,7 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
               inactive: MagnifyingGlassIcon,
               active: MagnifyingGlassFilledIcon,
             }}
-          />
+          /> */}
           <NavItem
             label={l`Notifications`}
             href="/notifications"
@@ -708,7 +711,8 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
               active: MessageFilledIcon,
             }}
           />
-          <NavItem
+          {/* Temporarily hidden: unfinished Bluesky-derived Feeds feature. */}
+          {/* <NavItem
             label={l`Feeds`}
             href="/feeds"
             navItem="feeds"
@@ -717,7 +721,7 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
               inactive: HashtagIcon,
               active: HashtagFilledIcon,
             }}
-          />
+          /> */}
           <NavItem
             label={l`Lists`}
             href="/lists"

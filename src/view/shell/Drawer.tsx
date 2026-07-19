@@ -40,18 +40,20 @@ import {
 } from '#/components/icons/Bell'
 import {Bookmark, BookmarkFilled} from '#/components/icons/Bookmark'
 import {BulletList_Stroke2_Corner0_Rounded as List} from '#/components/icons/BulletList'
-import {
-  Hashtag_Filled_Corner0_Rounded as HashtagFilled,
-  Hashtag_Stroke2_Corner0_Rounded as Hashtag,
-} from '#/components/icons/Hashtag'
+// Temporarily hidden with the Feeds menu item below.
+// import {
+//   Hashtag_Filled_Corner0_Rounded as HashtagFilled,
+//   Hashtag_Stroke2_Corner0_Rounded as Hashtag,
+// } from '#/components/icons/Hashtag'
 import {
   HomeOpen_Filled_Corner0_Rounded as HomeFilled,
   HomeOpen_Stoke2_Corner0_Rounded as Home,
 } from '#/components/icons/HomeOpen'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
-} from '#/components/icons/MagnifyingGlass'
+// Temporarily hidden with the Explore menu item below.
+// import {
+//   MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
+//   MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
+// } from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
@@ -188,8 +190,9 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
   const ax = useAnalytics()
   const {
     isAtHome,
-    isAtSearch,
-    isAtFeeds,
+    // Temporarily hidden with the Explore and Feeds menu items below.
+    // isAtSearch,
+    // isAtFeeds,
     isAtBookmarks,
     isAtNotifications,
     isAtMyProfile,
@@ -248,8 +251,6 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
 
   const onPressHome = useCallback(() => onPressTab('Home'), [onPressTab])
 
-  const onPressSearch = useCallback(() => onPressTab('Search'), [onPressTab])
-
   const onPressMessages = useCallback(
     () => onPressTab('Messages'),
     [onPressTab],
@@ -268,11 +269,12 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
     onPressTab('MyProfile', 'drawerHeader')
   }, [onPressTab])
 
-  const onPressMyFeeds = useCallback(() => {
-    ax.metric('nav:click', {item: 'feeds', surface: 'drawer'})
-    navigation.navigate('Feeds')
-    setDrawerOpen(false)
-  }, [navigation, setDrawerOpen, ax])
+  // Temporarily hidden with the Feeds menu item below.
+  // const onPressMyFeeds = useCallback(() => {
+  //   ax.metric('nav:click', {item: 'feeds', surface: 'drawer'})
+  //   navigation.navigate('Feeds')
+  //   setDrawerOpen(false)
+  // }, [navigation, setDrawerOpen, ax])
 
   const onPressLists = useCallback(() => {
     ax.metric('nav:click', {item: 'lists', surface: 'drawer'})
@@ -342,20 +344,23 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
               <NavSignupCard />
             </View>
           )}
-
-          <Divider style={[a.mt_xl, a.mb_sm]} />
         </View>
 
-        {hasSession ? (
+        {hasSession && (
           <>
-            <SearchMenuItem isActive={isAtSearch} onPress={onPressSearch} />
+            <View style={[a.px_xl]}>
+              <Divider style={[a.mt_xl, a.mb_sm]} />
+            </View>
+            {/* Temporarily hidden: unfinished Bluesky-derived Explore item. */}
+            {/* <SearchMenuItem isActive={isAtSearch} onPress={onPressSearch} /> */}
             <HomeMenuItem isActive={isAtHome} onPress={onPressHome} />
             <ChatMenuItem isActive={isAtMessages} onPress={onPressMessages} />
             <NotificationsMenuItem
               isActive={isAtNotifications}
               onPress={onPressNotifications}
             />
-            <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} />
+            {/* Temporarily hidden: unfinished Bluesky-derived Feeds item. */}
+            {/* <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} /> */}
             <ListsMenuItem onPress={onPressLists} />
             <BookmarksMenuItem
               isActive={isAtBookmarks}
@@ -367,16 +372,15 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
             />
             <SettingsMenuItem onPress={onPressSettings} />
           </>
-        ) : (
-          <>
-            <HomeMenuItem isActive={isAtHome} onPress={onPressHome} />
-            <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} />
-            <SearchMenuItem isActive={isAtSearch} onPress={onPressSearch} />
-          </>
         )}
 
         <View style={[a.px_xl]}>
-          <Divider style={[a.mb_xl, a.mt_sm]} />
+          {/*
+           * When signed in, the nav menu above provides spacing, so a smaller
+           * top margin is enough. When signed out that menu is absent, so we
+           * use a larger margin to keep this divider off the signup card.
+           */}
+          <Divider style={[hasSession ? a.mt_sm : a.mt_xl, a.mb_xl]} />
           <ExtraLinks />
         </View>
       </ScrollView>
@@ -452,31 +456,35 @@ interface MenuItemProps extends ComponentProps<typeof PressableScale> {
   bold?: boolean
 }
 
-let SearchMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <MagnifyingGlassFilled style={[t.atoms.text]} width={iconWidth} />
-        ) : (
-          <MagnifyingGlass style={[t.atoms.text]} width={iconWidth} />
-        )
-      }
-      label={_(msg`Explore`)}
-      bold={isActive}
-      onPress={onPress}
-    />
-  )
-}
-SearchMenuItem = memo(SearchMenuItem)
+/*
+ * Temporarily hidden: unfinished Bluesky-derived Explore item. Restore
+ * alongside the SearchMenuItem usage in DrawerContent.
+ */
+// let SearchMenuItem = ({
+//   isActive,
+//   onPress,
+// }: {
+//   isActive: boolean
+//   onPress: () => void
+// }): React.ReactNode => {
+//   const {_} = useLingui()
+//   const t = useTheme()
+//   return (
+//     <MenuItem
+//       icon={
+//         isActive ? (
+//           <MagnifyingGlassFilled style={[t.atoms.text]} width={iconWidth} />
+//         ) : (
+//           <MagnifyingGlass style={[t.atoms.text]} width={iconWidth} />
+//         )
+//       }
+//       label={_(msg`Explore`)}
+//       bold={isActive}
+//       onPress={onPress}
+//     />
+//   )
+// }
+// SearchMenuItem = memo(SearchMenuItem)
 
 let HomeMenuItem = ({
   isActive,
@@ -568,31 +576,35 @@ let NotificationsMenuItem = ({
 }
 NotificationsMenuItem = memo(NotificationsMenuItem)
 
-let FeedsMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <HashtagFilled width={iconWidth} style={[t.atoms.text]} />
-        ) : (
-          <Hashtag width={iconWidth} style={[t.atoms.text]} />
-        )
-      }
-      label={_(msg`Feeds`)}
-      bold={isActive}
-      onPress={onPress}
-    />
-  )
-}
-FeedsMenuItem = memo(FeedsMenuItem)
+/*
+ * Temporarily hidden: unfinished Bluesky-derived Feeds item. Restore
+ * alongside the FeedsMenuItem usage in DrawerContent.
+ */
+// let FeedsMenuItem = ({
+//   isActive,
+//   onPress,
+// }: {
+//   isActive: boolean
+//   onPress: () => void
+// }): React.ReactNode => {
+//   const {_} = useLingui()
+//   const t = useTheme()
+//   return (
+//     <MenuItem
+//       icon={
+//         isActive ? (
+//           <HashtagFilled width={iconWidth} style={[t.atoms.text]} />
+//         ) : (
+//           <Hashtag width={iconWidth} style={[t.atoms.text]} />
+//         )
+//       }
+//       label={_(msg`Feeds`)}
+//       bold={isActive}
+//       onPress={onPress}
+//     />
+//   )
+// }
+// FeedsMenuItem = memo(FeedsMenuItem)
 
 let ListsMenuItem = ({onPress}: {onPress: () => void}): React.ReactNode => {
   const {_} = useLingui()
