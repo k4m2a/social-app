@@ -30,14 +30,16 @@ import {
   Bell_Filled_Corner0_Rounded as BellFilled,
   Bell_Stroke2_Corner0_Rounded as Bell,
 } from '#/components/icons/Bell'
+import {Bookmark, BookmarkFilled} from '#/components/icons/Bookmark'
 import {
   HomeOpen_Filled_Corner0_Rounded as HomeFilled,
   HomeOpen_Stoke2_Corner0_Rounded as Home,
 } from '#/components/icons/HomeOpen'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
-} from '#/components/icons/MagnifyingGlass'
+// Temporarily hidden: Search swapped for Saved in the bottom bar.
+// import {
+//   MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
+//   MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
+// } from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
@@ -48,7 +50,7 @@ import {useAnalytics} from '#/analytics'
 import {getActiveBrand} from '#/brand/activeBrand'
 import {styles} from './BottomBarStyles'
 
-type NavItemValue = 'home' | 'search' | 'chat' | 'notifications' | 'profile'
+type NavItemValue = 'home' | 'saved' | 'chat' | 'notifications' | 'profile'
 
 export function BottomBarWeb() {
   const {_} = useLingui()
@@ -115,13 +117,13 @@ export function BottomBarWeb() {
                 )
               }}
             </NavItem>
-            <NavItem routeName="Search" href="/search" navItem="search">
+            <NavItem routeName="Bookmarks" href="/saved" navItem="saved">
               {({isActive}) => {
-                const Icon = isActive ? MagnifyingGlassFilled : MagnifyingGlass
+                const Icon = isActive ? BookmarkFilled : Bookmark
                 return (
                   <Icon
                     aria-hidden={true}
-                    width={iconWidth + 2}
+                    width={iconWidth}
                     style={[styles.ctrlIcon, t.atoms.text, styles.searchIcon]}
                   />
                 )

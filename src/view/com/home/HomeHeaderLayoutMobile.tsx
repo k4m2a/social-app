@@ -1,25 +1,27 @@
 import {View} from 'react-native'
 import Animated from 'react-native-reanimated'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
-import {msg} from '@lingui/core/macro'
-import {useLingui} from '@lingui/react'
+// Temporarily hidden with the feeds preferences button below.
+// import {msg} from '@lingui/core/macro'
+// import {useLingui} from '@lingui/react'
 import {useNavigation} from '@react-navigation/native'
 
-import {HITSLOP_10} from '#/lib/constants'
 import {PressableScale} from '#/lib/custom-animations/PressableScale'
 import {useHaptics} from '#/lib/haptics'
 import {type NavigationProp} from '#/lib/routes/types'
 import {emitSoftReset} from '#/state/events'
-import {useSession} from '#/state/session'
 import {useShellLayout} from '#/state/shell/shell-layout'
 import {useHomeHeaderTransform} from '#/view/com/util/MainScrollProvider'
 import {Logotype} from '#/view/icons/Logotype'
 import {atoms as a, useTheme} from '#/alf'
-import {ButtonIcon} from '#/components/Button'
-import {Hashtag_Stroke2_Corner0_Rounded as FeedsIcon} from '#/components/icons/Hashtag'
+// Temporarily hidden with the feeds preferences button below.
+// import {HITSLOP_10} from '#/lib/constants'
+// import {useSession} from '#/state/session'
+// import {ButtonIcon} from '#/components/Button'
+// import {Hashtag_Stroke2_Corner0_Rounded as FeedsIcon} from '#/components/icons/Hashtag'
+// import {Link} from '#/components/Link'
+// import {useAnalytics} from '#/analytics'
 import * as Layout from '#/components/Layout'
-import {Link} from '#/components/Link'
-import {useAnalytics} from '#/analytics'
 import {getActiveBrand} from '#/brand/activeBrand'
 import {IS_DEV, IS_LIQUID_GLASS} from '#/env'
 
@@ -30,13 +32,14 @@ export function HomeHeaderLayoutMobile({
   tabBarAnchor: React.ReactElement | null | undefined
 }) {
   const t = useTheme()
-  const {_} = useLingui()
-  const ax = useAnalytics()
+  // Temporarily hidden with the feeds preferences button below.
+  // const {_} = useLingui()
+  // const ax = useAnalytics()
+  // const {hasSession} = useSession()
   const {headerHeight} = useShellLayout()
   const insets = useSafeAreaInsets()
   const headerMinimalShellTransform = useHomeHeaderTransform()
   const brand = getActiveBrand()
-  const {hasSession} = useSession()
   const playHaptic = useHaptics()
   const {navigate} = useNavigation<NavigationProp>()
 
@@ -80,7 +83,8 @@ export function HomeHeaderLayoutMobile({
           </PressableScale>
         </View>
 
-        <Layout.Header.Slot>
+        {/* Temporarily hidden: unfinished Bluesky-derived feeds preferences button. */}
+        {/* <Layout.Header.Slot>
           {hasSession && (
             <Link
               testID="viewHeaderHomeFeedPrefsBtn"
@@ -102,7 +106,7 @@ export function HomeHeaderLayoutMobile({
               <ButtonIcon icon={FeedsIcon} size="lg" />
             </Link>
           )}
-        </Layout.Header.Slot>
+        </Layout.Header.Slot> */}
       </Layout.Header.Outer>
       {children}
     </Animated.View>
