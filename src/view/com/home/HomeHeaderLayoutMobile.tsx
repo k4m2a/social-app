@@ -83,6 +83,13 @@ export function HomeHeaderLayoutMobile({
           </PressableScale>
         </View>
 
+        {/*
+         * Empty slot to balance the menu button on the left so the logo stays
+         * centered while the feeds button is hidden. Remove this when restoring
+         * the feeds button slot below.
+         */}
+        <Layout.Header.Slot />
+
         {/* Temporarily hidden: unfinished Bluesky-derived feeds preferences button. */}
         {/* <Layout.Header.Slot>
           {hasSession && (

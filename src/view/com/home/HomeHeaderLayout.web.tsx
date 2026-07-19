@@ -55,7 +55,12 @@ function HomeHeaderLayoutDesktopAndTablet({
         <Layout.Center>
           <View
             style={[a.flex_row, a.align_center, gutters, a.pt_md, t.atoms.bg]}>
-            <View style={{width: 34}} />
+            {/*
+             * This spacer balanced the feeds button on the right so the logo
+             * stayed centered. Both are hidden together for now; restore them
+             * together to keep the logo centered.
+             */}
+            {/* <View style={{width: 34}} /> */}
             <View style={[a.flex_1, a.align_center, a.justify_center]}>
               {kawaii ? (
                 <Logo width={60} />
