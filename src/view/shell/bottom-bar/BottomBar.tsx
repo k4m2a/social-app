@@ -5,7 +5,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'
 import {plural} from '@lingui/core/macro'
 import {Trans, useLingui} from '@lingui/react/macro'
 import {type BottomTabBarProps} from '@react-navigation/bottom-tabs'
-import {StackActions} from '@react-navigation/native'
+import {StackActions, useNavigation} from '@react-navigation/native'
 
 import {PressableScale} from '#/lib/custom-animations/PressableScale'
 import {BOTTOM_BAR_AVI} from '#/lib/demo'
@@ -17,6 +17,7 @@ import {useNavigationTabState} from '#/lib/hooks/useNavigationTabState'
 import {clamp} from '#/lib/numbers'
 import {getTabState, TabState} from '#/lib/routes/helpers'
 import {type SharedNavTab, TAB_TO_NAV_ITEM} from '#/lib/routes/tab-to-nav-item'
+import {type NavigationProp} from '#/lib/routes/types'
 import {emitSoftReset} from '#/state/events'
 import {useUnreadMessageCount} from '#/state/queries/messages/list-conversations'
 import {useUpdateAllRead} from '#/state/queries/messages/update-all-read'
@@ -37,16 +38,18 @@ import {
   Bell_Filled_Corner0_Rounded as BellFilled,
   Bell_Stroke2_Corner0_Rounded as Bell,
 } from '#/components/icons/Bell'
+import {Bookmark, BookmarkFilled} from '#/components/icons/Bookmark'
 import {CircleCheck_Stroke2_Corner0_Rounded as CircleCheckIcon} from '#/components/icons/CircleCheck'
 import {
   HomeOpen_Filled_Corner0_Rounded as HomeFilled,
   HomeOpen_Stoke2_Corner0_Rounded as Home,
 } from '#/components/icons/HomeOpen'
 import {Inbox_Stroke2_Corner2_Rounded as InboxIcon} from '#/components/icons/Inbox'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
-} from '#/components/icons/MagnifyingGlass'
+// Temporarily hidden: Search swapped for Saved in the bottom bar.
+// import {
+//   MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
+//   MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
+// } from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
@@ -70,8 +73,13 @@ export function BottomBar({navigation}: BottomTabBarProps) {
   const brand = getActiveBrand()
   const safeAreaInsets = useSafeAreaInsets()
   const {footerHeight} = useShellLayout()
-  const {isAtHome, isAtSearch, isAtNotifications, isAtMyProfile, isAtMessages} =
-    useNavigationTabState()
+  const {
+    isAtHome,
+    isAtBookmarks,
+    isAtNotifications,
+    isAtMyProfile,
+    isAtMessages,
+  } = useNavigationTabState()
   const numUnreadNotifications = useUnreadNotifications()
   const numUnreadMessages = useUnreadMessageCount()
   const aa = useAgeAssurance()
@@ -84,6 +92,9 @@ export function BottomBar({navigation}: BottomTabBarProps) {
   const messagesMenuControl = Menu.useMenuControl()
   const playHaptic = useHaptics()
   const hideBorder = useHideBottomBarBorder()
+  // Bookmarks is a common stack route, not a bottom tab, so it needs the root
+  // navigation to push it rather than the tab-based onPressTab.
+  const rootNavigation = useNavigation<NavigationProp>()
   const iconWidth = 28
 
   const showSignIn = useCallback(() => {
@@ -133,7 +144,10 @@ export function BottomBar({navigation}: BottomTabBarProps) {
     [navigation, dedupe, ax],
   )
   const onPressHome = useCallback(() => onPressTab('Home'), [onPressTab])
-  const onPressSearch = useCallback(() => onPressTab('Search'), [onPressTab])
+  const onPressBookmarks = useCallback(() => {
+    ax.metric('nav:click', {item: 'saved', surface: 'bottomBar'})
+    rootNavigation.navigate('Bookmarks')
+  }, [rootNavigation, ax])
   const onPressNotifications = useCallback(
     () => onPressTab('Notifications'),
     [onPressTab],
@@ -200,23 +214,23 @@ export function BottomBar({navigation}: BottomTabBarProps) {
               accessibilityHint=""
             />
             <Btn
+              testID="bottomBarBookmarksBtn"
               icon={
-                isAtSearch ? (
-                  <MagnifyingGlassFilled
-                    width={iconWidth + 2}
+                isAtBookmarks ? (
+                  <BookmarkFilled
+                    width={iconWidth}
                     style={[styles.ctrlIcon, t.atoms.text, styles.searchIcon]}
                   />
                 ) : (
-                  <MagnifyingGlass
-                    testID="bottomBarSearchBtn"
-                    width={iconWidth + 2}
+                  <Bookmark
+                    width={iconWidth}
                     style={[styles.ctrlIcon, t.atoms.text, styles.searchIcon]}
                   />
                 )
               }
-              onPress={onPressSearch}
-              accessibilityRole="search"
-              accessibilityLabel={l`Search`}
+              onPress={onPressBookmarks}
+              accessibilityRole="tab"
+              accessibilityLabel={l`Saved`}
               accessibilityHint=""
             />
             <Btn
