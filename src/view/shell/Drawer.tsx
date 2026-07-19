@@ -251,6 +251,9 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
 
   const onPressHome = useCallback(() => onPressTab('Home'), [onPressTab])
 
+  // Temporarily hidden with the Explore menu item below.
+  // const onPressSearch = useCallback(() => onPressTab('Search'), [onPressTab])
+
   const onPressMessages = useCallback(
     () => onPressTab('Messages'),
     [onPressTab],
