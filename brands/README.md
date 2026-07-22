@@ -18,9 +18,9 @@ yarn web
 # the k4m2a community feed.
 EXPO_PUBLIC_BRAND=k4m2a yarn web
 
-# MDParivaar — saffron #CD7233 brand with the Madhyasth Darshan icon. Uses the
-# coseeker.org PDS and the mdparivaar community feed.
-EXPO_PUBLIC_BRAND=mdparivaar yarn web
+# Maanav — saffron #CD7233 brand with the Madhyasth Darshan icon. Uses the
+# coseeker.org PDS and the Maanav community feed.
+EXPO_PUBLIC_BRAND=maanav yarn web
 
 # CoSeeker — clone of k4m2a's monochrome visuals, served at coseeker.com. Uses
 # the coseeker.org PDS and the coseeker community feed.
@@ -31,7 +31,7 @@ The same env var works for native:
 
 ```bash
 EXPO_PUBLIC_BRAND=k4m2a yarn ios
-EXPO_PUBLIC_BRAND=mdparivaar yarn ios
+EXPO_PUBLIC_BRAND=maanav yarn ios
 ```
 
 If `EXPO_PUBLIC_BRAND` is unset, the app falls back to `bluesky`. On web, the

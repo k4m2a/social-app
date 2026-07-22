@@ -7,7 +7,7 @@
  */
 /**
  * Where the "Request Invite Code" CTA in the web welcome modal points. Shared
- * by the invite-only community brands (coseeker, k4m2a, mdparivaar); Bluesky
+ * by the invite-only community brands (coseeker, k4m2a, maanav); Bluesky
  * does not use it (open signup). See `welcomeModal` in `src/brand/types.ts`.
  */
 export const BRAND_INVITE_REQUEST_URL = 'https://forms.gle/Kob45PoNdLo2NrWm8'

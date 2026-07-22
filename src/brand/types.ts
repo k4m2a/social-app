@@ -133,7 +133,7 @@ export type Brand = BrandConfig & {
   /**
    * Narrow slot for brand-specific copy that replaces generic Bluesky strings.
    * These are plain strings rather than Lingui-extracted, because they are
-   * brand-specific and may be in the brand's own language (e.g. MDParivaar is
+   * brand-specific and may be in the brand's own language (e.g. Maanav is
    * Hindi). Keep this capped and only add fields when a brand proves it needs
    * genuinely different copy for a specific string site. Omit a field to fall
    * back to the default translated string.
@@ -153,7 +153,7 @@ export type Brand = BrandConfig & {
    * visitors on the homepage (`src/components/WelcomeModal.tsx`). Brand-identity
    * copy (headline / subtitle / attribution) is stored as plain strings here
    * rather than Lingui-extracted, because it is brand-specific and may be in the
-   * brand's own language (e.g. MDParivaar is Hindi). Omit the whole block to
+   * brand's own language (e.g. Maanav is Hindi). Omit the whole block to
    * suppress the modal for a brand.
    */
   welcomeModal?: {

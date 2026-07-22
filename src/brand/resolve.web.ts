@@ -12,8 +12,16 @@ import {type Brand} from './types'
 const HOSTNAME_TO_BRAND_ID: Record<string, string> = {
   'k4m2a.app': 'k4m2a',
   'www.k4m2a.app': 'k4m2a',
-  'mdparivaar.com': 'mdparivaar',
-  'www.mdparivaar.com': 'mdparivaar',
+  'maanav.net': 'maanav',
+  'www.maanav.net': 'maanav',
+  /*
+   * Legacy hosts from before the Maanav rename. The reverse proxy 301s these
+   * to maanav.net, so the app should never see them - these entries only
+   * keep the brand correct if a redirect is ever missed, rather than
+   * silently falling back to the default brand.
+   */
+  'mdparivaar.com': 'maanav',
+  'www.mdparivaar.com': 'maanav',
   'coseeker.com': 'coseeker',
   'www.coseeker.com': 'coseeker',
 }
