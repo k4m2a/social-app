@@ -15,6 +15,12 @@ export const brands: Record<string, Brand> = {
   mdparivaar,
 }
 
+/**
+ * Brand used for any hostname not listed in `resolve.web.ts`. Mirrored by
+ * `defaultBrandID` in `bskyweb/cmd/bskyweb/brand.go` - if the two disagree,
+ * unlisted hosts get SSR metadata and splash colors for one brand and then
+ * hydrate into another. `brand_test.go` fails the Go build if they diverge.
+ */
 export const DEFAULT_BRAND_ID = 'coseeker'
 
 export function getBrandById(id: string | undefined): Brand {
