@@ -62,12 +62,12 @@ var brands = map[string]Brand{
 		BgDim:         "#121212",
 		PrimaryColor:  "#000000",
 	},
-	"mdparivaar": {
-		ID:            "mdparivaar",
-		Name:          "MDParivaar",
-		SiteName:      "MDParivaar",
-		Description:   "Madhyasth Darshan community on MDParivaar.",
-		CanonicalHost: "mdparivaar.com",
+	"maanav": {
+		ID:            "maanav",
+		Name:          "Maanav",
+		SiteName:      "Maanav",
+		Description:   "Madhyasth Darshan community on Maanav.",
+		CanonicalHost: "maanav.net",
 		BgLight:       "#FFFFFF",
 		BgDark:        "#150D0A",
 		BgDim:         "#1E1410",
@@ -91,10 +91,16 @@ var brands = map[string]Brand{
 // production hostnames come online. Anything not listed falls back to the
 // default brand.
 var hostnameToBrandID = map[string]string{
-	"k4m2a.app":          "k4m2a",
-	"www.k4m2a.app":      "k4m2a",
-	"mdparivaar.com":     "mdparivaar",
-	"www.mdparivaar.com": "mdparivaar",
+	"k4m2a.app":      "k4m2a",
+	"www.k4m2a.app":  "k4m2a",
+	"maanav.net":     "maanav",
+	"www.maanav.net": "maanav",
+	// Legacy hosts from before the Maanav rename. The reverse proxy 301s
+	// these to maanav.net, so the app should never see them; these entries
+	// only keep the brand correct if a redirect is ever missed, rather than
+	// silently falling back to the default brand.
+	"mdparivaar.com":     "maanav",
+	"www.mdparivaar.com": "maanav",
 	"coseeker.com":       "coseeker",
 	"www.coseeker.com":   "coseeker",
 }

@@ -40,7 +40,7 @@ pre-hydration favicon needs per-brand favicon assets in `static/`.
 ## 3. Large brand SVGs eagerly imported into every bundle
 
 `src/brand/registry.ts` statically imports all four brands.
-`brands/shared/earthMark.svg.ts` is ~2.17 MB and `mdparivaar/logoIcon.svg.ts`
+`brands/shared/earthMark.svg.ts` is ~2.17 MB and `maanav/logoIcon.svg.ts`
 is ~118 KB, so every deployment - including the native single-tenant build
 where the brand is fixed at compile time - ships ~2.3 MB of SVG it never
 renders. `SvgXml` also re-parses these strings on every render of the tab

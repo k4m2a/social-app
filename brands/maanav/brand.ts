@@ -9,21 +9,21 @@ import nativeConfig from './brand.js'
 import {MD_ICON_SVG} from './logoIcon.svg'
 
 /**
- * MDParivaar runtime brand. Accounts live on the self-hosted PDS at
+ * Maanav runtime brand. Accounts live on the self-hosted PDS at
  * coseeker.org; reads still go through bluesky's public appview. The
  * `defaultFeeds`, `appAccountDid`, `links`, and `blogUrls` fields still
- * reference bluesky-owned resources — swap them for MDParivaar-owned
+ * reference bluesky-owned resources — swap them for Maanav-owned
  * values as those become available.
  *
  * To activate locally:
- *   EXPO_PUBLIC_BRAND=mdparivaar yarn web
- *   EXPO_PUBLIC_BRAND=mdparivaar yarn ios
+ *   EXPO_PUBLIC_BRAND=maanav yarn web
+ *   EXPO_PUBLIC_BRAND=maanav yarn ios
  */
 
 // Saffron primary ramp anchored on the brand's `#CD7233` (sampled from the
 // icon SVG). primary_500 is what most "primary" UI elements render with;
 // hover/press use 600/700, surfaces use 25-100.
-const MDPARIVAAR_PRIMARY_RAMP = {
+const MAANAV_PRIMARY_RAMP = {
   primary_25: '#FDF6F0',
   primary_50: '#FAEAD9',
   primary_100: '#F5D2B0',
@@ -39,7 +39,7 @@ const MDPARIVAAR_PRIMARY_RAMP = {
   primary_975: '#241208',
 }
 
-const MDPARIVAAR_CONTRASTS = {
+const MAANAV_CONTRASTS = {
   // Only override high contrast values (700-1000) for custom dark-mode warm-brown backgrounds and surfaces
   contrast_700: '#B19688', // Premium warm sandstone text/icons
   contrast_800: '#423028', // Active elements
@@ -49,7 +49,7 @@ const MDPARIVAAR_CONTRASTS = {
   contrast_1000: '#150D0A', // Deep near-black warm cocoa background for dark mode (instead of #000000)
 }
 
-const MDPARIVAAR_SUBDUED_CONTRASTS = {
+const MAANAV_SUBDUED_CONTRASTS = {
   // Subdued overrides for custom dim-mode warm-brown backgrounds and surfaces
   contrast_700: '#C5A898', // Soft sandstone text/icons
   contrast_800: '#543E33', // Active elements
@@ -59,16 +59,16 @@ const MDPARIVAAR_SUBDUED_CONTRASTS = {
   contrast_1000: '#1E1410', // Comfortable warm dim cocoa background for dim mode (instead of #151D28)
 }
 
-const mdparivaarPalette = {
+const maanavPalette = {
   ...DEFAULT_PALETTE,
-  ...MDPARIVAAR_PRIMARY_RAMP,
-  ...MDPARIVAAR_CONTRASTS,
+  ...MAANAV_PRIMARY_RAMP,
+  ...MAANAV_CONTRASTS,
 }
 
-const mdparivaarSubduedPalette = {
+const maanavSubduedPalette = {
   ...DEFAULT_SUBDUED_PALETTE,
-  ...MDPARIVAAR_PRIMARY_RAMP,
-  ...MDPARIVAAR_SUBDUED_CONTRASTS,
+  ...MAANAV_PRIMARY_RAMP,
+  ...MAANAV_SUBDUED_CONTRASTS,
 }
 
 // The MD icon is a self-contained design (white-on-saffron). Rendered via
@@ -79,14 +79,19 @@ const MD_ICON_SHAPE = {
   ratio: 1, // viewBox is 180x180
 }
 
-// Custom wordmark SVG for "MD Parivaar" text.
-const MD_WORDMARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 24">
-  <text x="50%" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Outfit', 'Inter', sans-serif" font-weight="900" font-size="20" fill="currentColor" text-anchor="middle">MD Parivaar</text>
+/*
+ * Custom wordmark SVG for "Maanav" text. The viewBox width is sized to the
+ * rendered glyph run so the wordmark's aspect ratio matches its ink - too
+ * wide and the mark floats in dead space, since `ratio` drives the layout
+ * box the wordmark is fitted into.
+ */
+const MAANAV_WORDMARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 24">
+  <text x="50%" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Outfit', 'Inter', sans-serif" font-weight="900" font-size="20" fill="currentColor" text-anchor="middle">Maanav</text>
 </svg>`
 
-const MD_WORDMARK_SHAPE = {
-  xml: MD_WORDMARK_SVG,
-  ratio: 24 / 126,
+const MAANAV_WORDMARK_SHAPE = {
+  xml: MAANAV_WORDMARK_SVG,
+  ratio: 24 / 80,
 }
 
 const brand: Brand = {
@@ -118,7 +123,7 @@ const brand: Brand = {
   ],
 
   links: {
-    // Brand-page links default to coseeker.org (mdparivaar accounts live on the
+    // Brand-page links default to coseeker.org (maanav accounts live on the
     // coseeker.org PDS). Infra links stay on the shared Bluesky AppView.
     ...DEFAULT_BRAND_PAGE_LINKS,
     statusPage: 'https://status.bsky.app/',
@@ -147,13 +152,13 @@ const brand: Brand = {
   },
 
   palette: {
-    default: mdparivaarPalette,
-    subdued: mdparivaarSubduedPalette,
+    default: maanavPalette,
+    subdued: maanavSubduedPalette,
   },
 
   logo: {
     mark: MD_ICON_SHAPE,
-    wordmark: MD_WORDMARK_SHAPE,
+    wordmark: MAANAV_WORDMARK_SHAPE,
     logomark: MD_ICON_SHAPE,
   },
 

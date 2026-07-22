@@ -256,7 +256,7 @@ brands/
 ├── k4m2a/
 │   ├── brand.js
 │   └── brand.ts
-└── mdparivaar/
+└── maanav/
     ├── brand.js
     ├── brand.ts
     └── logoIcon.svg.ts  ← extracted SVG string for the MD mark
@@ -264,7 +264,7 @@ brands/
 src/brand/
 ├── types.ts             ← Brand = BrandConfig & {runtime fields}
 ├── activeBrand.ts       ← setActiveBrand / getActiveBrand
-├── registry.ts          ← bluesky | k4m2a | mdparivaar lookup
+├── registry.ts          ← bluesky | k4m2a | maanav lookup
 ├── resolve.ts           ← native: process.env.EXPO_PUBLIC_BRAND
 ├── resolve.web.ts       ← web: hostname → brand id
 ├── boot.ts              ← side-effecting; runs in entry points
