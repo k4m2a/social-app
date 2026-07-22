@@ -5,6 +5,9 @@ import {type Brand} from './types'
  * Map a hostname to a brand id. Add deployment hostnames here as new
  * communities come online. Subdomains and root domains are matched
  * verbatim; anything not listed falls back to the default brand.
+ *
+ * Mirrored by `hostnameToBrandID` in `bskyweb/cmd/bskyweb/brand.go` for SSR.
+ * Keep both in sync - `brand_test.go` fails the Go build if they diverge.
  */
 const HOSTNAME_TO_BRAND_ID: Record<string, string> = {
   'k4m2a.app': 'k4m2a',

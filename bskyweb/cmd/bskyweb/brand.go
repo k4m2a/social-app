@@ -86,9 +86,10 @@ var brands = map[string]Brand{
 	},
 }
 
-// hostnameToBrandID mirrors src/brand/resolve.web.ts. Add entries as
-// production hostnames come online. Anything not listed falls back to
-// the default brand.
+// hostnameToBrandID mirrors HOSTNAME_TO_BRAND_ID in src/brand/resolve.web.ts;
+// TestHostnameMapMatchesTypeScript enforces that the two agree. Add entries as
+// production hostnames come online. Anything not listed falls back to the
+// default brand.
 var hostnameToBrandID = map[string]string{
 	"k4m2a.app":          "k4m2a",
 	"www.k4m2a.app":      "k4m2a",
@@ -98,7 +99,10 @@ var hostnameToBrandID = map[string]string{
 	"www.coseeker.com":   "coseeker",
 }
 
-const defaultBrandID = "bluesky"
+// defaultBrandID must match DEFAULT_BRAND_ID in src/brand/registry.ts. If the
+// two disagree, an unlisted host gets SSR metadata and splash colors for one
+// brand and then hydrates into another. See TestDefaultBrandMatchesTypeScript.
+const defaultBrandID = "coseeker"
 
 // ResolveBrand picks a brand from a Host header. Strips the port,
 // lowercases, and falls back to the default brand on unknown hosts.
