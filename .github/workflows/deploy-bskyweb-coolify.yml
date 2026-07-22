@@ -63,7 +63,6 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Trigger Coolify deployment
-        id: deploy
         env:
           COOLIFY_URL: ${{ vars.COOLIFY_URL }}
           COOLIFY_UUID: ${{ vars.COOLIFY_RESOURCE_UUID }}
@@ -77,36 +76,44 @@ jobs:
 
           echo "$response"
 
-          # The API returns a list of queued deployments; grab the first uuid
-          # so the next step can follow it to completion.
-          deployment_uuid=$(echo "$response" \
-            | python3 -c 'import sys,json; print(json.load(sys.stdin)["deployments"][0]["deployment_uuid"])')
+          # A service resource (docker-compose stack) returns
+          #   {"deployments":[{"message":"...","resource_uuid":"..."}]}
+          # with no deployment_uuid to follow - unlike an application resource.
+          # So confirm the deploy was accepted here, and gate on the app coming
+          # back up in the next step rather than polling a per-deployment record
+          # that services do not produce.
+          echo "$response" | python3 -c '
+          import sys, json
+          d = json.load(sys.stdin).get("deployments") or []
+          if not d:
+              sys.exit("no deployment was queued")
+          print("queued:", d[0].get("message", "(no message)"))'
 
-          echo "deployment_uuid=$deployment_uuid" >> "$GITHUB_OUTPUT"
-          echo "queued deployment $deployment_uuid"
-
-      - name: Wait for deployment to finish
+      # Coolify recreates the compose service asynchronously, so poll a real
+      # request path through Traefik until the new container is serving again.
+      # This needs no Coolify API and catches a rollout that never comes back;
+      # it does not need a deployment_uuid (services do not emit one).
+      - name: Wait for the app to come back up
         env:
-          COOLIFY_URL: ${{ vars.COOLIFY_URL }}
-          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
-          DEPLOYMENT_UUID: ${{ steps.deploy.outputs.deployment_uuid }}
+          HEALTHCHECK_URL: ${{ vars.COOLIFY_HEALTHCHECK_URL }}
         run: |
           set -euo pipefail
 
-          for _ in $(seq 1 90); do
-            status=$(curl -sS \
-              -H "Authorization: Bearer $COOLIFY_TOKEN" \
-              "$COOLIFY_URL/api/v1/deployments/$DEPLOYMENT_UUID" \
-              | python3 -c 'import sys,json; print(json.load(sys.stdin).get("status","unknown"))')
+          url="${HEALTHCHECK_URL:-https://coseeker.com/}"
 
-            echo "deployment status: $status"
+          # Give the recreate a moment to begin so we do not observe the old
+          # container still up and exit before the swap has even started.
+          sleep 20
 
-            case "$status" in
-              finished)          echo "deployment finished"; exit 0 ;;
-              failed|cancelled)  echo "deployment $status"; exit 1 ;;
-            esac
-            sleep 10
+          for _ in $(seq 1 60); do
+            code=$(curl -sS -o /dev/null -m 10 -w '%{http_code}' "$url" || echo 000)
+            echo "$url -> HTTP $code"
+            if [ "$code" = "200" ]; then
+              echo "app is serving again"
+              exit 0
+            fi
+            sleep 5
           done
 
-          echo "timed out waiting for deployment"
+          echo "timed out waiting for the app to come back up"
           exit 1
