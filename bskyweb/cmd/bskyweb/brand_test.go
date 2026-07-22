@@ -149,8 +149,13 @@ func TestResolveBrand(t *testing.T) {
 		},
 		{
 			name: "port is stripped",
-			host: "mdparivaar.com:8100",
-			want: "mdparivaar",
+			host: "maanav.net:8100",
+			want: "maanav",
+		},
+		{
+			name: "legacy host resolves to the renamed brand",
+			host: "mdparivaar.com",
+			want: "maanav",
 		},
 		{
 			name: "host is lowercased",
