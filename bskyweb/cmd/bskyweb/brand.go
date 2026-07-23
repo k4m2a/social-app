@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -109,6 +110,40 @@ var hostnameToBrandID = map[string]string{
 // two disagree, an unlisted host gets SSR metadata and splash colors for one
 // brand and then hydrates into another. See TestDefaultBrandMatchesTypeScript.
 const defaultBrandID = "coseeker"
+
+// legacyHostRedirects maps retired hostnames to the canonical host that
+// replaced them. A request to a legacy host is 301'd to the same path on the
+// canonical host. DNS for these still points here and they remain in
+// hostnameToBrandID as a brand-resolution safety net, but the redirect is the
+// intended behavior - a legacy host should not serve content of its own.
+var legacyHostRedirects = map[string]string{
+	"mdparivaar.com":     "maanav.net",
+	"www.mdparivaar.com": "maanav.net",
+}
+
+// LegacyHostRedirectMiddleware 301s any request whose Host is a retired
+// hostname to the same path and query on its canonical replacement. It runs
+// before brand resolution so retired hosts never render a page. Doing this in
+// the app rather than in Traefik keeps it version-controlled and survives
+// Coolify regenerating its own router labels on every deploy.
+func LegacyHostRedirectMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			host := strings.ToLower(c.Request().Host)
+			if i := strings.IndexByte(host, ':'); i >= 0 {
+				host = host[:i]
+			}
+			target, ok := legacyHostRedirects[host]
+			if !ok {
+				return next(c)
+			}
+			u := *c.Request().URL
+			u.Scheme = "https"
+			u.Host = target
+			return c.Redirect(http.StatusMovedPermanently, u.String())
+		}
+	}
+}
 
 // ResolveBrand picks a brand from a Host header. Strips the port,
 // lowercases, and falls back to the default brand on unknown hosts.

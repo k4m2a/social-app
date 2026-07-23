@@ -236,6 +236,10 @@ func serve(cctx *cli.Context) error {
 		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodOptions},
 	}))
 
+	// 301 retired hostnames to their canonical replacement before anything
+	// else renders, so a legacy host never serves a page of its own.
+	e.Use(LegacyHostRedirectMiddleware())
+
 	// Resolve the active brand from the Host header on every request,
 	// so handlers and templates can read it via brandFromContext().
 	e.Use(BrandMiddleware())

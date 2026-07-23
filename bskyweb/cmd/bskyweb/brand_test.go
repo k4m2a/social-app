@@ -1,10 +1,14 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"regexp"
 	"testing"
+
+	"github.com/labstack/echo/v4"
 )
 
 /*
@@ -183,6 +187,78 @@ func TestResolveBrand(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ResolveBrand(tt.host).ID; got != tt.want {
 				t.Errorf("ResolveBrand(%q).ID = %q, want %q", tt.host, got, tt.want)
+			}
+		})
+	}
+}
+
+// A legacy host must also resolve to a brand, so that if the redirect is ever
+// bypassed the host still renders something sane rather than the default brand.
+func TestLegacyHostsAreAlsoBrandMapped(t *testing.T) {
+	for host := range legacyHostRedirects {
+		if _, ok := hostnameToBrandID[host]; !ok {
+			t.Errorf("legacy host %q is not in hostnameToBrandID", host)
+		}
+	}
+}
+
+func TestLegacyHostRedirect(t *testing.T) {
+	tests := []struct {
+		name       string
+		host       string
+		target     string
+		wantStatus int
+		wantLoc    string
+	}{
+		{
+			name:       "apex legacy host redirects preserving path and query",
+			host:       "mdparivaar.com",
+			target:     "/profile/alice?a=1",
+			wantStatus: http.StatusMovedPermanently,
+			wantLoc:    "https://maanav.net/profile/alice?a=1",
+		},
+		{
+			name:       "www legacy host redirects to apex canonical",
+			host:       "www.mdparivaar.com",
+			target:     "/",
+			wantStatus: http.StatusMovedPermanently,
+			wantLoc:    "https://maanav.net/",
+		},
+		{
+			name:       "host with port still redirects",
+			host:       "mdparivaar.com:8100",
+			target:     "/",
+			wantStatus: http.StatusMovedPermanently,
+			wantLoc:    "https://maanav.net/",
+		},
+		{
+			name:       "current host is not redirected",
+			host:       "maanav.net",
+			target:     "/",
+			wantStatus: http.StatusOK,
+		},
+	}
+
+	e := echo.New()
+	h := LegacyHostRedirectMiddleware()(func(c echo.Context) error {
+		return c.NoContent(http.StatusOK)
+	})
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, tt.target, nil)
+			req.Host = tt.host
+			rec := httptest.NewRecorder()
+			if err := h(e.NewContext(req, rec)); err != nil {
+				t.Fatalf("handler returned error: %v", err)
+			}
+			if rec.Code != tt.wantStatus {
+				t.Errorf("status = %d, want %d", rec.Code, tt.wantStatus)
+			}
+			if tt.wantLoc != "" {
+				if loc := rec.Header().Get("Location"); loc != tt.wantLoc {
+					t.Errorf("Location = %q, want %q", loc, tt.wantLoc)
+				}
 			}
 		})
 	}
