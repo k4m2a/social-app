@@ -22,8 +22,15 @@ const HOSTNAME_TO_BRAND_ID: Record<string, string> = {
    */
   'mdparivaar.com': 'maanav',
   'www.mdparivaar.com': 'maanav',
-  'coseeker.com': 'coseeker',
-  'www.coseeker.com': 'coseeker',
+  'coseeker.app': 'coseeker',
+  'www.coseeker.app': 'coseeker',
+  /*
+   * coseeker.com is deliberately absent: the domain was lost in Aug 2026 and
+   * its DNS now points at a parking page we do not control. Unlike the
+   * mdparivaar entries above there is nothing to redirect - traffic never
+   * reaches us - so listing it would only imply an association we no longer
+   * have.
+   */
 }
 
 /**

@@ -22,7 +22,7 @@ EXPO_PUBLIC_BRAND=k4m2a yarn web
 # coseeker.org PDS and the Maanav community feed.
 EXPO_PUBLIC_BRAND=maanav yarn web
 
-# CoSeeker — clone of k4m2a's monochrome visuals, served at coseeker.com. Uses
+# CoSeeker — clone of k4m2a's monochrome visuals, served at coseeker.app. Uses
 # the coseeker.org PDS and the coseeker community feed.
 EXPO_PUBLIC_BRAND=coseeker yarn web
 ```

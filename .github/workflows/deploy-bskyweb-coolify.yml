@@ -99,7 +99,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          url="${HEALTHCHECK_URL:-https://coseeker.com/}"
+          url="${HEALTHCHECK_URL:-https://coseeker.app/}"
 
           # Give the recreate a moment to begin so we do not observe the old
           # container still up and exit before the swap has even started.
