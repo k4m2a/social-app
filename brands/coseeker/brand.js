@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * CoSeeker brand — clone of k4m2a's monochrome visual identity, served at
- * coseeker.com. Fill in the native-build TODOs before shipping a native app.
+ * coseeker.app. Fill in the native-build TODOs before shipping a native app.
  * Mirrors the shape consumed by `app.config.js` at native build time.
  *
  * @type {import('../types').BrandConfig}
@@ -25,10 +25,10 @@ const brand = {
   primaryColor: '#000000',
   splashColor: '#FFFFFF',
   splashColorDark: '#000000',
-  webHost: 'coseeker.com',
+  webHost: 'coseeker.app',
   associatedDomains: [
     // TODO: applinks for Universal Links + appclips entries if used
-    // 'applinks:coseeker.com',
+    // 'applinks:coseeker.app',
   ],
   contactsPermission:
     'I agree to allow CoSeeker to use my contacts for friend discovery until I opt out.',

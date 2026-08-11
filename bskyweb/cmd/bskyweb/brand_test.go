@@ -143,7 +143,7 @@ func TestResolveBrand(t *testing.T) {
 	}{
 		{
 			name: "listed host",
-			host: "coseeker.com",
+			host: "coseeker.app",
 			want: "coseeker",
 		},
 		{

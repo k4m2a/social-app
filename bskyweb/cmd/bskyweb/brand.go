@@ -79,7 +79,7 @@ var brands = map[string]Brand{
 		Name:          "CoSeeker",
 		SiteName:      "CoSeeker",
 		Description:   "Join the conversation on CoSeeker.",
-		CanonicalHost: "coseeker.com",
+		CanonicalHost: "coseeker.app",
 		BgLight:       "#FFFFFF",
 		BgDark:        "#0D0D0D",
 		BgDim:         "#121212",
@@ -102,8 +102,13 @@ var hostnameToBrandID = map[string]string{
 	// silently falling back to the default brand.
 	"mdparivaar.com":     "maanav",
 	"www.mdparivaar.com": "maanav",
-	"coseeker.com":       "coseeker",
-	"www.coseeker.com":   "coseeker",
+	"coseeker.app":       "coseeker",
+	"www.coseeker.app":   "coseeker",
+	// coseeker.com is deliberately absent: the domain was lost in Aug 2026 and
+	// its DNS now points at a parking page we do not control. Unlike the
+	// mdparivaar entries above there is nothing to redirect - traffic never
+	// reaches us - so listing it would only imply an association we no longer
+	// have.
 }
 
 // defaultBrandID must match DEFAULT_BRAND_ID in src/brand/registry.ts. If the

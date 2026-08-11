@@ -10,7 +10,7 @@ import {getActiveBrand} from '#/brand/activeBrand'
 
 const activeBrand = getActiveBrand()
 
-/** Web host for the active brand, e.g. `coseeker.com` (Bluesky: `bsky.app`). */
+/** Web host for the active brand, e.g. `coseeker.app` (Bluesky: `bsky.app`). */
 const BRAND_WEB_HOST = activeBrand.webHost
 /** PDS host for the active brand, e.g. `coseeker.org` (Bluesky: `bsky.social`). */
 const BRAND_PDS_HOST = (() => {
